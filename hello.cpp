@@ -4,6 +4,7 @@
 #include<algorithm>
 
 using namespace std;
+
 // 将x坐标转换为一般坐标系x坐标
 int setCoordinateX(int x){
 	return getwidth()/2+x;
@@ -13,6 +14,10 @@ int setCoordinateY(int y){
 	return getheight()/2-y;
 }
 
+//对putpixel函数做一层坐标系上的封装
+void putpixelRK(int x,int y,color_t color){
+	putpixel(setCoordinateX(x),setCoordinateY(y),color);
+}
 //斜率范围为[0,1]时的中点画线法
 void MidPointLine0To1(int x0, int y0, int x1, int y1, color_t color) {
 	int dx = x1 - x0, dy = y1 - y0;
@@ -20,7 +25,7 @@ void MidPointLine0To1(int x0, int y0, int x1, int y1, color_t color) {
 	int E = -2 * dy, NE = -2 * (dy - dx);
 	int x = x0, y = y0;
 	while (x <= x1) {
-		putpixel(setCoordinateX(x),setCoordinateY(y),color);
+		putpixelRK(x,y,color);
 		if (d > 0)d += E;
 		else {
 			d += NE;
@@ -37,7 +42,7 @@ void MidPointLineGt1(int x0, int y0, int x1, int y1, color_t color) {
 	int E = 2 * dx, NE = 2 * (dx - dy);
 	int x = x0, y = y0;
 	while (y <= y1) {
-		putpixel(setCoordinateX(x),setCoordinateY(y),color);
+		putpixelRK(x,y,color);
 		if (d < 0)d += E;
 		else {
 			d += NE;
@@ -54,7 +59,7 @@ void MidPointLine_1To0(int x0, int y0, int x1, int y1, color_t color) {
 	int E = -2 * dy, NE = -2 * (dx + dy);
 	int x = x0, y = y0;
 	while (x <= x1) {
-		putpixel(setCoordinateX(x),setCoordinateY(y),color);
+		putpixelRK(x,y,color);
 		if (d < 0)d += E;
 		else {
 			d += NE;
@@ -71,7 +76,7 @@ void MidPointLineLt_1(int x0, int y0, int x1, int y1, color_t color) {
 	int E = -2 * dy-2*dx, NE = -2 * dx;
 	int x = x0, y = y0;
 	while (x <= x1) {
-		putpixel(setCoordinateX(x),setCoordinateY(y),color);
+		putpixelRK(x,y,color);
 		if (d < 0) {
 			d += E;
 			x++;
@@ -83,7 +88,6 @@ void MidPointLineLt_1(int x0, int y0, int x1, int y1, color_t color) {
 
 void MidPointLineX(int x0, int y0, int x1, int y1, color_t color) {
 	int dx = x1 - x0, dy = y1 - y0;
-	printf("x0=%d,y0=%d,x1=%d,y1=%d\n",x0,y0,x1,y1);
 	//斜率为[0,1]的情况
 	if (!dy||(dy*dx > 0 && abs(dy) <= abs(dx))) {
 		MidPointLine0To1(min(x0,x1), min(y0,y1), max(x0,x1), max(y0,y1), color);
@@ -103,7 +107,6 @@ void MidPointLineX(int x0, int y0, int x1, int y1, color_t color) {
 }
 
 void drawArrow(int x0,int y0,int x1,int y1,color_t color) {
-	//目前只能画左箭头
 	MidPointLineX(x0,y0,x1,y1,color);
 	double angle;
 	if (x0 == x1)angle = PI / 2;
@@ -139,6 +142,75 @@ void drawScale(int x0,int y0,int x1,int y1,color_t color) {
 	}
 }
 
+//绘制圆上对称的八个点
+const int CIRCLE=8;
+const int ELLIPSE=4;
+
+//绘制椭圆上对称的四个点
+void drawSymmetricPoints(int x,int y,int color,int type,int x0=0,int y0=0){
+	int points[][2]={{x,y},{-x,y},{x,-y},{-x,-y},
+	{y,x},{-y,x},{y,-x},{-y,-x}};
+	for(int i=0;i<type;i++){
+		putpixelRK(points[i][0]+x0,points[i][1]+y0,color);
+	}
+}
+
+//中点算法绘制原形
+void drawCircle(int radius,color_t color,int x0=0,int y0=0){
+	int x=0,y=radius,d=5-4*radius;
+	int deltaE=12,deltaSE=20-8*radius;
+	while(y>=x){
+		drawSymmetricPoints(x,y,color,CIRCLE,x0,y0);
+		if(d<=0){
+			d+=deltaE;
+			deltaSE+=8;
+		}else{
+			d+=deltaSE;
+			deltaSE+=16;
+			y--;
+		}
+		deltaE+=8;//即使没有使用也要同步更新
+		x++;	
+	}
+}
+
+//中点算法绘制椭圆
+void drawEllipse(int a,int b,color_t color,int x0=0,int y0=0){
+	int x,y,d;
+	int square_a=a*a,square_b=b*b;
+	//计算分界点（斜率为1处）
+	int xB=0.5+square_a/sqrt(square_a+square_b);
+	int yB=0.5+square_b/sqrt(square_a+square_b);
+
+	//生成第一象限内的上半部分椭圆弧
+	x=0;y=b;
+	d=4*(square_b-square_a*b)+square_a;//初始化
+	while(x<=xB){
+		drawSymmetricPoints(x,y,color,ELLIPSE,x0,y0);
+		int t=4*square_b*(2*x+3);
+		if(d<=0)d+=t;
+		else{
+			d+=t-8*square_a*(y-1);
+			y--;
+		}
+		x++;
+	}
+
+	//生成第一象限内的下半部分椭圆弧
+	x=a;y=0;
+	d=4*(square_a-a*square_b)+square_b;//初始化
+	while(y<yB){
+		drawSymmetricPoints(x,y,color,ELLIPSE,x0,y0);
+		int t=4*square_a*(2*y+3);
+		if(d<=0)d+=t;
+		else{
+			d+=t-8*square_b*(x-1);
+			x--;
+		}
+		y++;
+	}
+}
+
 int main()
 {
 	initgraph(640, 480);				//初始化图形界面
@@ -151,7 +223,10 @@ int main()
 	drawScale(0,-180,0,180,0);
 	// line(setCoordinateX(-100),setCoordinateY(-50),
 	// 	setCoordinateX(100),setCoordinateY(50));
-	MidPointLineX(-100,-50,100,50,0x777777);
+	MidPointLineX(-100,-50,100,50,0x777777);//画一条直线
+	// drawCircle(100,0);//画圆,圆心在坐标原点
+	drawCircle(100,0,50,50);//画圆,指定圆心坐标
+	drawEllipse(50,70,0,50,50);
 	getch();							//暂停，等待键盘按键
 	closegraph();						//关闭图形界面
 	return 0;
