@@ -12,6 +12,7 @@
                 "${fileDirname}\\${fileBasenameNoExtension}.exe",
                 "-I",
                 "D:/workspace/c++/graphics/include",
+                "-LD:/workspace/c++/graphics/lib",
                 "-lgraphics64",
                 "-luuid",
                 "-lmsimg32",
