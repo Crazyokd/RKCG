@@ -2,6 +2,7 @@
     "files.associations": {
         "random": "cpp",
         "limits": "cpp",
-        "ranges": "cpp"
+        "ranges": "cpp",
+        "new": "cpp"
     }
 }

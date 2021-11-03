@@ -1,0 +1,5 @@
+*.exe
+
+settings.json
+
+launch.json
