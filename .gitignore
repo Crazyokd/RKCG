@@ -1,5 +1,8 @@
+# VS Code 配置文件
+.vscode/settings.json
+.vscode/launch.json
+.vscode/c_cpp_properties.json
+.vscode/tasks.json
+
+# 可执行文件
 *.exe
-
-settings.json
-
-launch.json
