@@ -142,20 +142,17 @@ int main() {
 	std::cout << "ok" << std::endl;
 
 	// 图形 B
+	const point p0{200, 200};
+	const point p1{250, 250};
 	const std::vector<point> bPoints{
-		{100, 100},
-		{80, 300},
-		{150, 200},
-		{200, 280},
-		{250, 150},
-		{300, 250},
-		{320, 160},
-		{350, 299},
-		{340, 80},
+		p0,
+		{p0.x, p1.y},
+		p1,
+		{p1.x, p0.y},
 	};
 	connectPoints(bPoints, ege::COLORS::RED);
 
-	const point seed{160, 120};
+	const point seed{(p0.x + p1.x) >> 1, (p0.y + p1.y) >> 1};
 	// 注意边界颜色和填充颜色不要和坐标轴颜色（也就是黑色）相同
 	seedFill(seed, ege::COLORS::BLUE, ege::COLORS::RED);
 
