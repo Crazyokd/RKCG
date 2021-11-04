@@ -1,16 +1,16 @@
-#include <graphics.h>					//包含EGE的头文件
-#include<iostream>
-#include<cmath>
-#include<algorithm>
+#include "graphics.h"					//包含EGE的头文件
+#include <iostream>
+#include <cmath>
+#include <algorithm>
 
 using namespace std;
 
 // 将x坐标转换为一般坐标系x坐标
-int setCoordinateX(int x){
+inline int setCoordinateX(int x){
 	return getwidth()/2+x;
 }
 // 将y坐标转换为一般坐标系y坐标
-int setCoordinateY(int y){
+inline int setCoordinateY(int y){
 	return getheight()/2-y;
 }
 
@@ -137,8 +137,8 @@ void drawScale(int x0,int y0,int x1,int y1,color_t color) {
 	else angle = atan(1.0*(y1 - y0) / (x1 - x0));
 	while (x <= x1&&y<=y1) {
 		MidPointLineX(x - 5 * cos(PI / 2 - angle), y + 5 * sin(PI / 2 - angle),x,y,color);
-		x = x + 10 * cos(angle);
-		y = y + 10 * sin(angle);
+		x = x + 50 * cos(angle);
+		y = y + 50 * sin(angle);
 	}
 }
 
