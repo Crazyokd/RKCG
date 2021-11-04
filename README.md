@@ -12,6 +12,13 @@
   * 本以为就是配个`include`，没想到还涉及很多问题【~~哎，头发怎么又变稀了？？
     ~~】，当然收获也颇为丰厚！关于总结可以戳这个[:point_up_2:](https://crazyokd.github.io/2021/10/10/%E8%A7%A3%E5%86%B3vscode%E5%BC%95%E7%94%A8c++%E5%A4%96%E9%83%A8%E5%BA%93%E6%8A%A5%E9%94%99/)
 
+# 快速开始
+
+试试这行命令：
+
+```bat
+.\test.bat hello
+```
 
 # 项目进度
 
@@ -39,6 +46,12 @@
 
 2. 使用命令行编译
 
-    考虑到学校的机器没有 `make`，所以给出了编译脚本 [make_hello.bat](make_hello.bat)，只能编译 [hello.cpp]，但是可以替换脚本中的源文件名 `hello.cpp` 和输出文件 `hello.exe` 来编译其他源文件。
+    写了一个简易的脚本 [make.bat](make.bat) 来模仿 `make` 的功能，使用方式是：
 
-    编译完成后你会得到一个 [hello.exe](hello.exe) 可执行文件，直接运行即可。
+    ```bat
+    .\make.bat <fileBasenameNoExtension>
+    ```
+
+    唯一并且唯一的参数是去掉扩展后的源文件名，比如 `hello.cpp` 对应的就是 `hello`。
+
+    还有一个类似的测试脚本 [test.bat](test.bat)，每次都会调用 [make.bat](make.bat) 重新生成程序并运行，~~免去了调试的时间损耗~~。
