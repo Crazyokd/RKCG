@@ -224,6 +224,7 @@ void drawEllipse(int a,int b,color_t color,int x0=0,int y0=0){
 	}
 }
 
+
 struct point{
 	int x,y;
 	point(int x,int y){
@@ -246,39 +247,21 @@ struct edge{
 	}
 };
 
-//窗口最大高度
-const int MAXHEIGHT=480;
-
-//将点作预处理
-edge** buildET(point pp[],int count,int *minn,int *maxx){
-	edge* ET[MAXHEIGHT];
-	//初始化
-	for(int i=0;i<MAXHEIGHT;i++)
-		ET[i]=NULL;
-	
-	for(int i=0;i<count;i++){
-		int t1=pp[i].y,t2=pp[(i+1)%count].y;
-		if(t1==t2)continue;//忽略水平边
-		int y1=t1,y2=t2,x1=pp[i].x,x2=pp[(i+1)%count].x;
-		//保证y2>y1
-		if(t1>t2){
-			y1=t2;y2=t1;
-			int t=x1;
-			x1=x2;x2=t;
+//输出ET(辅助函数)
+void printET(edge **ET,int minn,int maxx){
+	for(int i=minn;i<=maxx;i++){
+		if(ET[i] != NULL){
+			edge *t=ET[i];
+			while(t != NULL){
+				printf("%x\n",t);
+				printf("y=%d;ymax=%d;x=%f;deltax=%f\n",i,t->ymax,t->x,t->deltax);
+				t=t->nextEdge;
+			}
 		}
-		edge* e=new edge();
-		e->ymax=y2;
-		e->x=x1;
-		e->deltax=1.0*(x2-x1)/(y2-y1);
-		e->nextEdge=ET[y1];
-		ET[y1]=e;
-		*minn=min(*minn,y1);
-		*maxx=max(*maxx,y2);
 	}
-	edge** et=ET;
-	return et;
 }
 
+//删除y=ymax的边
 void deleteObererPol(edge* e,int i){
 	while(e->nextEdge != NULL && e->nextEdge->ymax == i){
 		edge* t = e->nextEdge;
@@ -287,10 +270,39 @@ void deleteObererPol(edge* e,int i){
 	}
 }
 
-void convertFromPointToEdge(point pp[],int count,color_t color){
+//窗口最大高度
+const int MAXHEIGHT=480;
+
+//扫描转换多边形,要求按顺序给出顶点集
+void scanConversionPolygon(point pp[],int count,color_t color){
 	int minn=MAXHEIGHT,maxx=0;
-	edge** ET=buildET(pp,count,&minn,&maxx);
-	// printf("%d %d\n",minn,maxx);
+	edge* ET[MAXHEIGHT];//适应y为负数的情况
+	//初始化
+	for(int i=0;i<MAXHEIGHT;i++)
+		ET[i]=NULL;
+	
+	for(int i=0;i<count;i++){
+		int t1=pp[i].y+MAXHEIGHT/2,t2=pp[(i+1)%count].y+MAXHEIGHT/2;
+		if(t1==t2)continue;//忽略水平边
+		int y1=t1,y2=t2,x1=pp[i].x,x2=pp[(i+1)%count].x;
+		//保证y2>y1
+		if(t1>t2){
+			y1=t2;y2=t1;
+			int t=x1;
+			x1=x2;x2=t;
+		}
+		// printf("x1=%d;y1=%d;x2=%d;y2=%d\n",x1,y1,x2,y2);
+		edge* e=new edge();
+		e->ymax=y2;
+		e->x=x1;
+		e->deltax=1.0*(x2-x1)/(y2-y1);
+		e->nextEdge=ET[y1];
+		ET[y1]=e;
+		minn=min(minn,y1);
+		maxx=max(maxx,y2);
+	}
+	// printET(ET,*minn,*maxx);//打印ET
+
 	edge* AEL=new edge(0);//作为根节点
 	for(int i=minn;i<=maxx;i++){
 		edge *e=ET[i];
@@ -306,8 +318,8 @@ void convertFromPointToEdge(point pp[],int count,color_t color){
 			e->nextEdge = tmp->nextEdge;
 			tmp->nextEdge = e;
 			e=t;
-			printf("添加了一条边,x=%d\n",tmp->nextEdge->x);
 		}
+		//删除y=ymax
 		e=AEL;
 		while(e != NULL && e->nextEdge != NULL){
 			deleteObererPol(e,i);
@@ -315,11 +327,21 @@ void convertFromPointToEdge(point pp[],int count,color_t color){
 		}
 		e=AEL->nextEdge;
 		while(e != NULL){
-			// printf("%f %f %d %d %d\n",e->x,e->nextEdge->x,e->ymax,e->nextEdge->ymax,i);
-			MidPointLineX(e->x,i,e->nextEdge->x,i,0x777777);
+			// printf("%f %f %d %d %d\n",e->x+1,e->nextEdge->x,e->ymax,e->nextEdge->ymax,i);
+			MidPointLineX(e->x+1,i-MAXHEIGHT/2,e->nextEdge->x,i-MAXHEIGHT/2,color);
 			e->x +=e->deltax;
 			e->nextEdge->x +=e->nextEdge->deltax;
 			e=e->nextEdge->nextEdge;
 		}
+	}
+}
+
+void FloodFill4(int x,int y,color_t oldColor,color_t newColor){
+	if(getpixel(setCoordinateX(x),setCoordinateY(y))==oldColor){
+		putpixelRK(x,y,newColor);
+		FloodFill4(x,y+1,oldColor,newColor);
+		FloodFill4(x,y-1,oldColor,newColor);
+		FloodFill4(x-1,y,oldColor,newColor);
+		FloodFill4(x+1,y,oldColor,newColor);
 	}
 }
