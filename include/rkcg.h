@@ -274,7 +274,7 @@ void deleteObererPol(edge* e,int i){
 const int MAXHEIGHT=480;
 
 //扫描转换多边形,要求按顺序给出顶点集
-void scanConversionPolygon(point pp[],int count,color_t color){
+void scanConversionPolygon(const point pp[],int count,color_t color){
 	int minn=MAXHEIGHT,maxx=0;
 	edge* ET[MAXHEIGHT];//适应y为负数的情况
 	//初始化
@@ -333,6 +333,9 @@ void scanConversionPolygon(point pp[],int count,color_t color){
 			e->nextEdge->x +=e->nextEdge->deltax;
 			e=e->nextEdge->nextEdge;
 		}
+
+		// show process
+		ege::delay(10);
 	}
 }
 
