@@ -76,7 +76,7 @@ inline void MidPointLineX(const point &p0, const point &p1, const ege::color_t c
 // 顺时针连接各点
 void connectPoints(const std::vector<point> &points, const ege::color_t color = ege::COLORS::BLACK) {
 	if (points.empty()) return;
-	MidPointLineX(points.front(), points.back(), color);
+	MidPointLineX(points.back(), points.front(), color);
 	for (size_t i = 1; i < points.size(); ++i) {
 		MidPointLineX(points[i - 1], points[i], color);
 	}
@@ -89,10 +89,14 @@ void connectPoints(const point points[], const int len, const ege::color_t color
 	}
 }
 
+// 真正的区域填充函数，使用绝对坐标提高效率
 void egeSeedFill(const int x, const int y, const ege::color_t fillColor, const ege::color_t borderColor = ege::COLORS::BLACK) {
 	const ege::color_t color = ege::getpixel(x, y);
 	if (color == borderColor || color == fillColor) return;
 	ege::putpixel(x, y, fillColor);
+
+	// 区域填充过于费时，不推荐增加延迟观察填充过程
+	// ege::delay(1);
 
 	egeSeedFill(x - 1, y, fillColor, borderColor);
 	egeSeedFill(x, y + 1, fillColor, borderColor);
@@ -100,11 +104,16 @@ void egeSeedFill(const int x, const int y, const ege::color_t fillColor, const e
 	egeSeedFill(x, y - 1, fillColor, borderColor);
 }
 
+// 使用相对坐标的区域填充函数，先转化成绝对坐标再调用真正的填充函数提高效率
 inline void seedFill(const int relativeX, const int relativeY, const ege::color_t fillColor, const ege::color_t borderColor = ege::COLORS::BLACK) {
 	egeSeedFill(setCoordinateX(relativeX), setCoordinateY(relativeY), fillColor, borderColor);
 }
 inline void seedFill(const point &seed, const ege::color_t fillColor, const ege::color_t borderColor = ege::COLORS::BLACK) {
 	egeSeedFill(setCoordinateX(seed.x), setCoordinateY(seed.y), fillColor, borderColor);
+}
+
+inline void scanConversionPolygon(const std::vector<point> &points, const ege::color_t &color) {
+	scanConversionPolygon(&points.front(), points.size(), color);
 }
 
 int main() {
@@ -113,9 +122,11 @@ int main() {
 	const ege::color_t BG_COLOR = ege::COLORS::WHITE;
 	createCanvas(WIDTH, HEIGHT, BG_COLOR);
 
-	// begin: 实验代码
+	// 实验代码 begin
 
-	std::vector<point> points{
+	// 图形 A
+	std::cout << "begin " << std::endl;
+	const std::vector<point> aPoints{
 		{0, 100},
 		{30, 50},
 		{100, 50},
@@ -127,13 +138,28 @@ int main() {
 		{-100, 50},
 		{-30, 50},
 	};
-	connectPoints(points, ege::COLORS::RED);
+	scanConversionPolygon(aPoints, ege::COLORS::CYAN);
+	std::cout << "ok" << std::endl;
 
-	point seed{20, 20};
+	// 图形 B
+	const std::vector<point> bPoints{
+		{100, 100},
+		{80, 300},
+		{150, 200},
+		{200, 280},
+		{250, 150},
+		{300, 250},
+		{320, 160},
+		{350, 299},
+		{340, 80},
+	};
+	connectPoints(bPoints, ege::COLORS::RED);
+
+	const point seed{160, 120};
 	// 注意边界颜色和填充颜色不要和坐标轴颜色（也就是黑色）相同
 	seedFill(seed, ege::COLORS::BLUE, ege::COLORS::RED);
 
-	// end: 实验代码
+	// 实验代码 end
 
 
 	// UI 关闭才退出程序
