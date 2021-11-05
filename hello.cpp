@@ -29,8 +29,8 @@ int main()
 	// scanConversionPolygon(pp,7,0x777777);
 	scanConversionPolygon(pp,7,RED);
 	point pp2[]={*(new point(-50,-50)),*(new point(-50,0)),*(new point(0,0)),*(new point(0,-50))};
-	point pp3[]={*(new point(0,0)),*(new point(0,50)),*(new point(50,50)),*(new point(50,0))};
-	scanConversionPolygon(pp2,4,0);
+	point pp3[]={point(0,0),point(0,50),point(50,50),point(50,0)};
+	scanConversionPolygon(pp2,4,GREEN);
 	scanConversionPolygon(pp3,4,0);
 
 	//确定边界
@@ -39,7 +39,8 @@ int main()
 	// MidPointLineX(0,0,0,-50,RED);
 	// MidPointLineX(0,-50,-50,-50,RED);
 
-	// FloodFill4(-25,-25,getpixel(setCoordinateX(-25),setCoordinateY(-25)),RED);
+	// startFloodFill4(-25,-25,BLUE);
+	startScanLineFill(65,25,BLUE);
 	getch();							//暂停，等待键盘按键
 	closegraph();						//关闭图形界面
 	return 0;

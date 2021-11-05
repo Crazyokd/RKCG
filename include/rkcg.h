@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cmath>
 #include <algorithm>
+#include <stack>
 
 using namespace std;
 
@@ -17,6 +18,11 @@ inline int setCoordinateY(int y){
 //对putpixel函数做一层坐标系上的封装
 void putpixelRK(int x,int y,color_t color){
 	putpixel(setCoordinateX(x),setCoordinateY(y),color);
+}
+
+//对getpixel函数做一层坐标系上的封装
+color_t getpixelRK(int x,int y){
+	return getpixel(setCoordinateX(x),setCoordinateY(y));
 }
 //斜率范围为[0,1]时的中点画线法
 void MidPointLine0To1(int x0, int y0, int x1, int y1, color_t color) {
@@ -339,12 +345,106 @@ void scanConversionPolygon(const point pp[],int count,color_t color){
 	}
 }
 
-void FloodFill4(int x,int y,color_t oldColor,color_t newColor){
+
+
+//区域填充4连通
+void floodFill4(int x,int y,color_t oldColor,color_t newColor){
 	if(getpixel(setCoordinateX(x),setCoordinateY(y))==oldColor){
 		putpixelRK(x,y,newColor);
-		FloodFill4(x,y+1,oldColor,newColor);
-		FloodFill4(x,y-1,oldColor,newColor);
-		FloodFill4(x-1,y,oldColor,newColor);
-		FloodFill4(x+1,y,oldColor,newColor);
+		floodFill4(x,y+1,oldColor,newColor);
+		floodFill4(x,y-1,oldColor,newColor);
+		floodFill4(x-1,y,oldColor,newColor);
+		floodFill4(x+1,y,oldColor,newColor);
 	}
+	// ege::delay(1);
+}
+
+//调用时可以不指定oldColor
+void startFloodFill4(int x,int y,color_t color){
+	floodFill4(x,y,getpixel(setCoordinateX(x),setCoordinateY(y)),color);
+}
+
+typedef struct{
+	int y,xLeft,xRight;
+}Span;
+
+Span constructSpan(int y,int xLeft,int xRight){
+	Span span;
+	span.y=y;
+	span.xLeft=xLeft;
+	span.xRight=xRight;
+	return span;
+}
+
+void fillAdjacentScanLines(stack<Span> &ss,Span &span,int y,color_t oldColor,color_t newColor){
+	int cursor,xleft;
+	bool isConfirmLeftBoundary=false;
+	//确定左边界
+	cursor=span.xLeft-1;
+	while(getpixelRK(cursor,y)==oldColor){
+		putpixelRK(cursor,y,newColor);
+		cursor--;
+	}
+	if(cursor!=span.xLeft-1){
+		xleft=cursor+1;
+		isConfirmLeftBoundary=true;
+	}
+	cursor=span.xLeft;
+	while(cursor<span.xRight){
+		bool isFill=false;
+		while(getpixelRK(cursor,y)==oldColor){
+			if(!isFill){
+				isFill=true;
+				if(!isConfirmLeftBoundary){
+					xleft=cursor;
+					isConfirmLeftBoundary=true;
+				}	
+			}
+			putpixelRK(cursor,y,newColor);
+			cursor++;
+		}
+		if(isFill){
+			ss.push(constructSpan(y,xleft,cursor-1));
+			isConfirmLeftBoundary=false;
+			ege::delay(10);
+		}
+		while(getpixelRK(cursor,y)!=oldColor && cursor<span.xRight)
+			cursor++;
+	}
+}
+
+void scanLineFill(int x,int y,color_t oldColor,color_t newColor){
+	int cursor;
+	Span span;
+	span.y=y;
+	//确定左边界
+	cursor=x;
+	while(getpixelRK(cursor,y)==oldColor){
+		putpixelRK(cursor,y,newColor);
+		cursor--;
+	}
+	span.xLeft=cursor+1;
+	//确定右边界
+	cursor=x+1;
+	while(getpixelRK(cursor,y)==oldColor){
+		putpixelRK(cursor,y,newColor);
+		cursor++;
+	}
+	span.xRight=cursor-1;
+
+	stack<Span> ss;
+	ss.push(span);
+
+	while(!ss.empty()){
+		span=ss.top();
+		ss.pop();
+		//确定上面一条扫描线
+		fillAdjacentScanLines(ss,span,span.y+1,oldColor,newColor);
+		//确定下面一条扫描线
+		fillAdjacentScanLines(ss,span,span.y-1,oldColor,newColor);
+	}
+}
+
+void startScanLineFill(int x,int y,color_t color){
+	scanLineFill(x,y,getpixelRK(x,y),color);
 }

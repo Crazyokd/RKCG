@@ -140,6 +140,7 @@ int main() {
 	};
 	scanConversionPolygon(aPoints, ege::COLORS::CYAN);
 	std::cout << "ok" << std::endl;
+	// startScanLineFill(-60,-30,ege::BLUE);
 
 	// 图形 B
 	const point p0{200, 200};
