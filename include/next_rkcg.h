@@ -73,12 +73,12 @@ inline void putString(const int relativeX, const int relatevieY, const std::stri
 //斜率范围为[0,1]时的中点画线法
 void MidPointLine0To1(const int x0, const int y0, const int x1, const int y1, const ege::color_t color) {
 	const int dx = x1 - x0, dy = y1 - y0;
-	const int d = dx - 2 * dy; //初始化判别式d
+	int d = dx - 2 * dy; //初始化判别式d
 	const int E = -2 * dy, NE = -2 * (dy - dx);
 	int x = x0, y = y0;
 	while (x <= x1) {
 		putpixelRK(x,y,color);
-		if (d > 0)d += E;
+		if (d > 0) d += E;
 		else {
 			d += NE;
 			y++;
@@ -90,12 +90,12 @@ void MidPointLine0To1(const int x0, const int y0, const int x1, const int y1, co
 //斜率范围为[1,]时的中点画线法
 void MidPointLineGt1(const int x0, const int y0, const int x1, const int y1, const ege::color_t color) {
 	const int dx = x1 - x0, dy = y1 - y0;
-	const int d = 2*dx - dy; //初始化判别式d
+	int d = 2*dx - dy; //初始化判别式d
 	const int E = 2 * dx, NE = 2 * (dx - dy);
 	int x = x0, y = y0;
 	while (y <= y1) {
 		putpixelRK(x,y,color);
-		if (d < 0)d += E;
+		if (d < 0) d += E;
 		else {
 			d += NE;
 			x++;
@@ -107,12 +107,12 @@ void MidPointLineGt1(const int x0, const int y0, const int x1, const int y1, con
 //斜率范围为[-1,0]时的中点画线法
 void MidPointLine_1To0(const int x0, const int y0, const int x1, const int y1, const ege::color_t color) {
 	const int dx = x1 - x0, dy = y1 - y0;
-	const int d = -dx - 2*dy; //初始化判别式d
+	int d = -dx - 2*dy; //初始化判别式d
 	const int E = -2 * dy, NE = -2 * (dx + dy);
 	int x = x0, y = y0;
 	while (x <= x1) {
 		putpixelRK(x,y,color);
-		if (d < 0)d += E;
+		if (d < 0) d += E;
 		else {
 			d += NE;
 			y--;
@@ -124,7 +124,7 @@ void MidPointLine_1To0(const int x0, const int y0, const int x1, const int y1, c
 //斜率范围为[,-1]时的中点画线法
 void MidPointLineLt_1(const int x0, const int y0, const int x1, const int y1, const ege::color_t color) {
 	const int dx = x1 - x0, dy = y1 - y0;
-	const int d = -2*dx -  dy; //初始化判别式d
+	int d = -2*dx -  dy; //初始化判别式d
 	const int E = -2 * dy-2*dx, NE = -2 * dx;
 	int x = x0, y = y0;
 	while (x <= x1) {
@@ -140,22 +140,22 @@ void MidPointLineLt_1(const int x0, const int y0, const int x1, const int y1, co
 
 void MidPointLineX(const int x0, const int y0, const int x1, const int y1, const ege::color_t color) {
 	const int dx = x1 - x0, dy = y1 - y0;
-	//斜率为[0,1]的情况
 	if (!dy||(dy*dx > 0 && abs(dy) <= abs(dx))) {
-		MidPointLine0To1(min(x0,x1), min(y0,y1), max(x0,x1), max(y0,y1), color);
+		//斜率为[0,1]的情况
+		MidPointLine0To1(std::min(x0,x1), std::min(y0,y1), std::max(x0,x1), std::max(y0,y1), color);
+	} else if (!dx||(dy*dx > 0 && abs(dy) > abs(dx))) {
+		//斜率为[1,]的情况
+		MidPointLineGt1(std::min(x0,x1), std::min(y0,y1), std::max(x0,x1), std::max(y0,y1), color);
+	} else if (dy*dx < 0 && abs(dy) <= abs(dx)) {
+		//斜率为[-1,0]的情况
+		MidPointLine_1To0(std::min(x0,x1), std::max(y0,y1), std::max(x0,x1), std::min(y0,y1), color);
+	} else if (dy*dx<0 && abs(dy)>abs(dx)) {
+		//斜率<-1的情况
+		MidPointLineLt_1(std::min(x0,x1), std::max(y0,y1), std::max(x0,x1), std::min(y0,y1), color);
 	}
-	//斜率为[1,]的情况
-	if (!dx||(dy*dx > 0 && abs(dy) > abs(dx))) {
-		MidPointLineGt1(min(x0,x1), min(y0,y1), max(x0,x1), max(y0,y1), color);
-	}
-	//斜率为[-1,0]的情况
-	if (dy*dx < 0 && abs(dy) <= abs(dx)) {
-		MidPointLine_1To0(min(x0,x1), max(y0,y1), max(x0,x1), min(y0,y1), color);
-	}
-	//斜率<-1的情况
-	if (dy*dx<0 && abs(dy)>abs(dx)) {
-		MidPointLineLt_1(min(x0,x1), max(y0,y1), max(x0,x1), min(y0,y1), color);
-	}
+}
+inline void MidPointLineX(const point &p0, const point &p1, const ege::color_t color) {
+	MidPointLineX(p0.x, p0.y, p1.x, p1.y, color);
 }
 
 // 顺时针连接各点
@@ -199,7 +199,7 @@ void drawArrow(const int x0,const int y0,const int x1,const int y1,const ege::co
 
 void drawScale(const int x0,const int y0,const int x1,const int y1,const ege::color_t color) {
 	MidPointLineX(x0,y0,x1,y1,color);
-	const int x = x0, y = y0;
+	int x = x0, y = y0;
 	double angle;
 	if (x0 == x1)angle = PI / 2;
 	else angle = atan(1.0*(y1 - y0) / (x1 - x0));
@@ -353,18 +353,18 @@ void deleteObererPol(edge* e,int i){
 }
 
 //窗口最大高度
-const int MAXHEIGHT=480;
+const int MAX_HEIGHT =480;
 
 //扫描转换多边形,要求按顺序给出顶点集
 void scanConversionPolygon(const point pp[],int count,const ege::color_t color){
-	int minn=MAXHEIGHT,maxx=0;
-	edge* ET[MAXHEIGHT];//适应y为负数的情况
+	int minn=MAX_HEIGHT ,maxx=0;
+	edge* ET[MAX_HEIGHT ];//适应y为负数的情况
 	//初始化
-	for(int i=0;i<MAXHEIGHT;i++)
+	for(int i=0;i<MAX_HEIGHT ;i++)
 		ET[i]=NULL;
 	
 	for(int i=0;i<count;i++){
-		int t1=pp[i].y+MAXHEIGHT/2,t2=pp[(i+1)%count].y+MAXHEIGHT/2;
+		int t1=pp[i].y+MAX_HEIGHT /2,t2=pp[(i+1)%count].y+MAX_HEIGHT /2;
 		if(t1==t2)continue;//忽略水平边
 		int y1=t1,y2=t2,x1=pp[i].x,x2=pp[(i+1)%count].x;
 		//保证y2>y1
@@ -380,8 +380,8 @@ void scanConversionPolygon(const point pp[],int count,const ege::color_t color){
 		e->deltax=1.0*(x2-x1)/(y2-y1);
 		e->nextEdge=ET[y1];
 		ET[y1]=e;
-		minn=min(minn,y1);
-		maxx=max(maxx,y2);
+		minn=std::min(minn,y1);
+		maxx=std::max(maxx,y2);
 	}
 	// printET(ET,*minn,*maxx);//打印ET
 
@@ -410,7 +410,7 @@ void scanConversionPolygon(const point pp[],int count,const ege::color_t color){
 		e=AEL->nextEdge;
 		while(e != NULL){
 			// printf("%lf %lf %d %d %d\n",e->x+1,e->nextEdge->x,e->ymax,e->nextEdge->ymax,i);
-			MidPointLineX(e->x+1,i-MAXHEIGHT/2,e->nextEdge->x,i-MAXHEIGHT/2,color);
+			MidPointLineX(e->x+1,i-MAX_HEIGHT /2,e->nextEdge->x,i-MAX_HEIGHT /2,color);
 			e->x +=e->deltax;
 			e->nextEdge->x +=e->nextEdge->deltax;
 			e=e->nextEdge->nextEdge;
@@ -420,8 +420,9 @@ void scanConversionPolygon(const point pp[],int count,const ege::color_t color){
 		ege::delay(10);
 	}
 }
-
-
+inline void scanConversionPolygon(const std::vector<point> &points, const ege::color_t &color) {
+	scanConversionPolygon(&points.front(), points.size(), color);
+}
 
 //区域填充4连通
 void floodFill4(int x,int y,const ege::color_t oldColor,const ege::color_t newColor){
@@ -440,9 +441,9 @@ void startFloodFill4(int x,int y,const ege::color_t color){
 	floodFill4(x,y,getpixel(setCoordinateX(x),setCoordinateY(y)),color);
 }
 
-typedef struct{
+struct Span {
 	int y,xLeft,xRight;
-}Span;
+};
 
 Span constructSpan(int y,int xLeft,int xRight){
 	Span span;
@@ -452,7 +453,7 @@ Span constructSpan(int y,int xLeft,int xRight){
 	return span;
 }
 
-void fillAdjacentScanLines(stack<Span> &ss,Span &span,int y,const ege::color_t oldColor,const ege::color_t newColor){
+void fillAdjacentScanLines(std::stack<Span> &ss,Span &span,int y,const ege::color_t oldColor,const ege::color_t newColor){
 	int cursor,xleft;
 	bool isConfirmLeftBoundary=false;
 	//确定左边界
@@ -508,7 +509,7 @@ void scanLineFill(int x,int y,const ege::color_t oldColor,const ege::color_t new
 	}
 	span.xRight=cursor-1;
 
-	stack<Span> ss;
+	std::stack<Span> ss;
 	ss.push(span);
 
 	while(!ss.empty()) {
@@ -523,6 +524,29 @@ void scanLineFill(int x,int y,const ege::color_t oldColor,const ege::color_t new
 
 void startScanLineFill(int x,int y,const ege::color_t color) {
 	scanLineFill(x,y,getpixelRK(x,y),color);
+}
+
+// 真正的区域填充函数，使用绝对坐标提高效率
+void egeSeedFill(const int x, const int y, const ege::color_t fillColor, const ege::color_t borderColor = ege::COLORS::BLACK) {
+	const ege::color_t color = ege::getpixel(x, y);
+	if (color == borderColor || color == fillColor) return;
+	ege::putpixel(x, y, fillColor);
+
+	// 区域填充过于费时，不推荐增加延迟观察填充过程
+	// ege::delay(1);
+
+	egeSeedFill(x - 1, y, fillColor, borderColor);
+	egeSeedFill(x, y + 1, fillColor, borderColor);
+	egeSeedFill(x + 1, y, fillColor, borderColor);
+	egeSeedFill(x, y - 1, fillColor, borderColor);
+}
+
+// 使用相对坐标的区域填充函数，先转化成绝对坐标再调用真正的填充函数提高效率
+inline void seedFill(const int relativeX, const int relativeY, const ege::color_t fillColor, const ege::color_t borderColor = ege::COLORS::BLACK) {
+	egeSeedFill(setCoordinateX(relativeX), setCoordinateY(relativeY), fillColor, borderColor);
+}
+inline void seedFill(const point &seed, const ege::color_t fillColor, const ege::color_t borderColor = ege::COLORS::BLACK) {
+	egeSeedFill(setCoordinateX(seed.x), setCoordinateY(seed.y), fillColor, borderColor);
 }
 
 }
