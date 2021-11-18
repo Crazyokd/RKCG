@@ -1,4 +1,4 @@
-#include "next_graphics.h"					//包含EGE的头文件
+#include "graphics.h"					//包含EGE的头文件
 #include <iostream>
 #include <cmath>
 #include <algorithm>
