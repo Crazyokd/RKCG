@@ -17,8 +17,12 @@
 试试这行命令：
 
 ```bat
-.\test.bat hello
+.\test.bat example
 ```
+
+不出意外的话，你会看到一个带有简单坐标系的窗口，实际上这行命令会编译 [example.cpp](example.cpp) 并执行，你可以通过编辑该文件来绘制你自己的图形。
+
+![example](resource/images/example-screenshot.png)
 
 # 项目进度
 
@@ -64,3 +68,9 @@
     唯一并且唯一的参数是去掉扩展后的源文件名，比如 `hello.cpp` 对应的就是 `hello`。
 
     还有一个类似的测试脚本 [test.bat](test.bat)，每次都会调用 [make.bat](make.bat) 重新生成程序并运行，~~免去了调试的时间损耗~~。
+
+# 参考
+
+- [error: default argument given for parameter 2](https://stackoverflow.com/questions/60896087/error-default-argument-given-for-parameter-2)
+
+- [Makefile Tutorial By Examples](https://makefiletutorial.com/)
