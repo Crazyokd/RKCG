@@ -448,3 +448,128 @@ void scanLineFill(int x,int y,color_t oldColor,color_t newColor){
 void startScanLineFill(int x,int y,color_t color){
 	scanLineFill(x,y,getpixelRK(x,y),color);
 }
+
+
+
+void drawRectangle(ege::ege_rect rect,color_t color){
+	MidPointLineX(rect.x,rect.y,rect.x,rect.y+rect.h,color);
+	MidPointLineX(rect.x,rect.y+rect.h,rect.x+rect.w,rect.y+rect.h,color);
+	MidPointLineX(rect.x+rect.w,rect.y+rect.h,rect.x+rect.w,rect.y,color);
+	MidPointLineX(rect.x+rect.w,rect.y,rect.x,rect.y,color);
+}
+//直线段剪裁
+typedef struct{
+	unsigned all;
+	unsigned left,right,top,bottom;
+}OutCode;
+void CompOutCode(float x,float y,ege::ege_rect *rect,OutCode *outCode){
+	//编码方式tbrl
+	outCode->all=0;
+	outCode->top=outCode->bottom=0;
+	if(y>(float)rect->y+rect->h){
+		outCode->top=1;
+		outCode->all+=8;
+	}else if(y < (float)rect->y){
+		outCode->bottom=1;
+		outCode->all+=4;
+	}
+	outCode->right=outCode->left=0;
+	if(x>(float)rect->x+rect->w){
+		outCode->right=1;
+		outCode->all+=2;
+	}else if(x<(float)rect->x){
+		outCode->left=1;
+		outCode->all+=1;
+	}
+}
+
+//CohenSutherland算法实现直线段剪裁
+void CohenSutherlandLineClip(float x0,float y0,float x1,float y1,ege::ege_rect *rect,color_t color=0){
+	boolean accept,done;
+	OutCode outCode0,outCode1;
+	OutCode *outCodeOut;
+	float x,y;
+	accept=false;
+	done=false;
+	CompOutCode(x0,y0,rect,&outCode0);
+	CompOutCode(x1,y1,rect,&outCode1);
+	do{
+		//完全可见
+		if(outCode0.all == 0 && outCode1.all == 0){
+			accept=true;
+			done=true;
+		}else if(outCode0.all & outCode1.all){//完全不可见
+			done=true;
+		}else{
+			if(outCode0.all)outCodeOut=&outCode0;
+			else outCodeOut=&outCode1;
+			if(outCodeOut->left){
+				y=y0+(rect->x-x0)*(y1-y0)/(x1-x0);
+				x=(float)rect->x;
+			}else if(outCodeOut->top){
+				x=x0+(x1-x0)*(rect->y+rect->h-y0)/(y1-y0);
+				y=(float)rect->y+rect->h;
+			}else if(outCodeOut->right){
+				y=y0+(y1-y0)*(rect->x+rect->w-x0)/(x1-x0);
+				x=(float)rect->x+rect->w;
+			}else if(outCodeOut->bottom){
+				x=x0+(x1-x0)*(rect->y-y0)/(y1-y0);
+				y=(float)rect->y;
+			}
+			if(outCodeOut==&outCode0){
+				x0=x;
+				y0=y;
+				CompOutCode(x0,y0,rect,&outCode0);
+			}else{
+				x1=x;
+				y1=y;
+				CompOutCode(x1,y1,rect,&outCode1);
+			}
+		}
+	}while(!done);
+	if(accept)MidPointLineX((int)x0,(int)y0,(int)x1,(int)y1,color);
+}
+
+//当线段完全不可见时，返回false
+boolean ClipT(float q,float d,float *t0,float *t1){
+	float r;
+	if(q<0){
+		r=d/q;
+		if(r>*t1)return false;
+		else if(r>*t0){
+			*t0=r;
+			return true;
+		}
+	}else if(q>0){
+		r=d/q;
+		if(r<*t0){
+			return false;
+		}else if(r<*t1){
+			*t1=r;
+			return true;
+		}
+
+	}else if(d<0){
+		return false;
+	}
+	return true;
+}
+
+void LiangBarskyLineClip(float x0,float y0,float x1,float y1,ege::ege_rect *rect){
+	float deltax,deltay,t0,t1;
+	t0=0,t1=1;
+	deltax=x1-x0;
+	if(ClipT(-deltax,x0-rect->x,&t0,&t1)){
+		if(ClipT(deltax,rect->x+rect->w-x0,&t0,&t1)){
+			deltay=y1-y0;
+			if(ClipT(-deltay,y0-rect->y,&t0,&t1)){
+				if(ClipT(deltay,rect->y+rect->h-y0,&t0,&t1)){
+					MidPointLineX((int)(x0+t0*deltax),(int)(y0+t0*deltay),
+					(int)(x0+t1*deltax),(int)(y0+t1*deltay),0);
+					return;
+				}
+			}
+		}
+	}
+	std::cout<<"完全不可见";
+}
