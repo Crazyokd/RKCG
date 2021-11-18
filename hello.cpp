@@ -27,11 +27,11 @@ int main()
 	point pp[]={*(new point(50,10)),*(new point(20,40)),*( new point(20,80)),*(new point(70,70)),*(new point(120,110)),
 		*(new point(120,50)),*(new point(70,10))};
 	// scanConversionPolygon(pp,7,0x777777);
-	scanConversionPolygon(pp,7,RED);
+	// scanConversionPolygon(pp,7,RED);
 	point pp2[]={*(new point(-50,-50)),*(new point(-50,0)),*(new point(0,0)),*(new point(0,-50))};
 	point pp3[]={point(0,0),point(0,50),point(50,50),point(50,0)};
-	scanConversionPolygon(pp2,4,GREEN);
-	scanConversionPolygon(pp3,4,0);
+	// scanConversionPolygon(pp2,4,GREEN);
+	// scanConversionPolygon(pp3,4,0);
 
 	//确定边界
 	// MidPointLineX(-50,-50,-50,0,RED);
@@ -40,7 +40,19 @@ int main()
 	// MidPointLineX(0,-50,-50,-50,RED);
 
 	// startFloodFill4(-25,-25,BLUE);
-	startScanLineFill(65,25,BLUE);
+	// startScanLineFill(65,25,BLUE);
+
+	ege::ege_rect rect=ege::ege_rect();
+	rect.x=rect.y=-50;
+	rect.w=rect.h=100;
+	drawRectangle(rect,ege::COLORS::RED);
+	CohenSutherlandLineClip(-100,-100,100,100,&rect);
+	CohenSutherlandLineClip(-25,-75,25,75,&rect);
+	LiangBarskyLineClip(-100,-100,100,100,&rect);
+
+	CohenSutherlandLineClip(-25,25,25,-25,&rect);
+	// LiangBarskyLineClip(-25,25,25,-25,&rect);
+	LiangBarskyLineClip(200,-50,200,50,&rect);
 	getch();							//暂停，等待键盘按键
 	closegraph();						//关闭图形界面
 	return 0;
