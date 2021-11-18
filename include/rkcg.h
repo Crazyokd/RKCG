@@ -8,24 +8,24 @@ using namespace std;
 
 // 将x坐标转换为一般坐标系x坐标
 inline int setCoordinateX(int x){
-	return getwidth()/2+x;
+	return ege::getwidth()/2+x;
 }
 // 将y坐标转换为一般坐标系y坐标
 inline int setCoordinateY(int y){
-	return getheight()/2-y;
+	return ege::getheight()/2-y;
 }
 
 //对putpixel函数做一层坐标系上的封装
-void putpixelRK(int x,int y,color_t color){
-	putpixel(setCoordinateX(x),setCoordinateY(y),color);
+void putpixelRK(int x,int y,ege::color_t color){
+	ege::putpixel(setCoordinateX(x),setCoordinateY(y),color);
 }
 
 //对getpixel函数做一层坐标系上的封装
-color_t getpixelRK(int x,int y){
-	return getpixel(setCoordinateX(x),setCoordinateY(y));
+ege::color_t getpixelRK(int x,int y){
+	return ege::getpixel(setCoordinateX(x),setCoordinateY(y));
 }
 //斜率范围为[0,1]时的中点画线法
-void MidPointLine0To1(int x0, int y0, int x1, int y1, color_t color) {
+void MidPointLine0To1(int x0, int y0, int x1, int y1, ege::color_t color) {
 	int dx = x1 - x0, dy = y1 - y0;
 	int d = dx - 2 * dy; //初始化判别式d
 	int E = -2 * dy, NE = -2 * (dy - dx);
@@ -42,7 +42,7 @@ void MidPointLine0To1(int x0, int y0, int x1, int y1, color_t color) {
 }
 
 //斜率范围为[1,]时的中点画线法
-void MidPointLineGt1(int x0, int y0, int x1, int y1, color_t color) {
+void MidPointLineGt1(int x0, int y0, int x1, int y1, ege::color_t color) {
 	int dx = x1 - x0, dy = y1 - y0;
 	int d = 2*dx - dy; //初始化判别式d
 	int E = 2 * dx, NE = 2 * (dx - dy);
@@ -59,7 +59,7 @@ void MidPointLineGt1(int x0, int y0, int x1, int y1, color_t color) {
 }
 
 //斜率范围为[-1,0]时的中点画线法
-void MidPointLine_1To0(int x0, int y0, int x1, int y1, color_t color) {
+void MidPointLine_1To0(int x0, int y0, int x1, int y1, ege::color_t color) {
 	int dx = x1 - x0, dy = y1 - y0;
 	int d = -dx - 2*dy; //初始化判别式d
 	int E = -2 * dy, NE = -2 * (dx + dy);
@@ -76,7 +76,7 @@ void MidPointLine_1To0(int x0, int y0, int x1, int y1, color_t color) {
 }
 
 //斜率范围为[,-1]时的中点画线法
-void MidPointLineLt_1(int x0, int y0, int x1, int y1, color_t color) {
+void MidPointLineLt_1(int x0, int y0, int x1, int y1, ege::color_t color) {
 	int dx = x1 - x0, dy = y1 - y0;
 	int d = -2*dx -  dy; //初始化判别式d
 	int E = -2 * dy-2*dx, NE = -2 * dx;
@@ -92,7 +92,7 @@ void MidPointLineLt_1(int x0, int y0, int x1, int y1, color_t color) {
 	}
 }
 
-void MidPointLineX(int x0, int y0, int x1, int y1, color_t color) {
+void MidPointLineX(int x0, int y0, int x1, int y1, ege::color_t color) {
 	int dx = x1 - x0, dy = y1 - y0;
 	//斜率为[0,1]的情况
 	if (!dy||(dy*dx > 0 && abs(dy) <= abs(dx))) {
@@ -112,37 +112,37 @@ void MidPointLineX(int x0, int y0, int x1, int y1, color_t color) {
 	}
 }
 
-void drawArrow(int x0,int y0,int x1,int y1,color_t color) {
+void drawArrow(int x0,int y0,int x1,int y1,ege::color_t color) {
 	MidPointLineX(x0,y0,x1,y1,color);
 	double angle;
-	if (x0 == x1)angle = PI / 2;
+	if (x0 == x1)angle = ege::PI / 2;
 	else angle = atan(1.0*(y1 - y0) / (x1 - x0));
 	int rarrowx,rarrowy,larrowx,larrowy;
 	if(x1>x0 || y1>y0){
 		//左箭头
-		rarrowx = x1 - 10 * cos(PI / 6 + angle);
-		rarrowy = y1 - 10 * sin(PI / 6 + angle);
-		larrowx = x1 - 10 * sin(PI / 3 + angle);
-		larrowy = y1 + 10 * cos(PI / 3 + angle);
+		rarrowx = x1 - 10 * cos(ege::PI / 6 + angle);
+		rarrowy = y1 - 10 * sin(ege::PI / 6 + angle);
+		larrowx = x1 - 10 * sin(ege::PI / 3 + angle);
+		larrowy = y1 + 10 * cos(ege::PI / 3 + angle);
 	}else{
 		//右箭头
-		rarrowx = x1 + 10 * cos(PI / 6 + angle);
-		rarrowy = y1 + 10 * sin(PI / 6 + angle);
-		larrowx = x1 + 10 * sin(PI / 3 + angle);
-		larrowy = y1 - 10 * cos(PI / 3 + angle);
+		rarrowx = x1 + 10 * cos(ege::PI / 6 + angle);
+		rarrowy = y1 + 10 * sin(ege::PI / 6 + angle);
+		larrowx = x1 + 10 * sin(ege::PI / 3 + angle);
+		larrowy = y1 - 10 * cos(ege::PI / 3 + angle);
 	}
 	MidPointLineX(rarrowx,rarrowy,x1,y1,color);
 	MidPointLineX(larrowx,larrowy,x1,y1,color);
 }
 
-void drawScale(int x0,int y0,int x1,int y1,color_t color) {
+void drawScale(int x0,int y0,int x1,int y1,ege::color_t color) {
 	MidPointLineX(x0,y0,x1,y1,color);
 	int x = x0, y = y0;
 	double angle;
-	if (x0 == x1)angle = PI / 2;
+	if (x0 == x1)angle = ege::PI / 2;
 	else angle = atan(1.0*(y1 - y0) / (x1 - x0));
 	while (x <= x1&&y<=y1) {
-		MidPointLineX(x - 5 * cos(PI / 2 - angle), y + 5 * sin(PI / 2 - angle),x,y,color);
+		MidPointLineX(x - 5 * cos(ege::PI / 2 - angle), y + 5 * sin(ege::PI / 2 - angle),x,y,color);
 		x = x + 50 * cos(angle);
 		y = y + 50 * sin(angle);
 	}
@@ -161,7 +161,7 @@ void drawSymmetricPoints(int x,int y,int color,int type,int x0=0,int y0=0){
 }
 
 //BresenHam算法绘制圆形
-void CircleBres(int  radius,color_t color,int x0=0,int y0=0){
+void CircleBres(int  radius,ege::color_t color,int x0=0,int y0=0){
 	int x=0,y=radius,p=3-2*radius;
  	while (x<=y){
 		drawSymmetricPoints(x,y,color,CIRCLE,x0,y0);
@@ -175,7 +175,7 @@ void CircleBres(int  radius,color_t color,int x0=0,int y0=0){
 }
 
 //中点算法绘制圆形
-void drawCircle(int radius,color_t color,int x0=0,int y0=0){
+void drawCircle(int radius,ege::color_t color,int x0=0,int y0=0){
 	int x=0,y=radius,d=5-4*radius;
 	int deltaE=12,deltaSE=20-8*radius;
 	while(y>=x){
@@ -194,7 +194,7 @@ void drawCircle(int radius,color_t color,int x0=0,int y0=0){
 }
 
 //中点算法绘制椭圆
-void drawEllipse(int a,int b,color_t color,int x0=0,int y0=0){
+void drawEllipse(int a,int b,ege::color_t color,int x0=0,int y0=0){
 	int x,y,d;
 	int square_a=a*a,square_b=b*b;
 	//计算分界点（斜率为1处）
@@ -280,7 +280,7 @@ void deleteObererPol(edge* e,int i){
 const int MAXHEIGHT=480;
 
 //扫描转换多边形,要求按顺序给出顶点集
-void scanConversionPolygon(const point pp[],int count,color_t color){
+void scanConversionPolygon(const point pp[],int count,ege::color_t color){
 	int minn=MAXHEIGHT,maxx=0;
 	edge* ET[MAXHEIGHT];//适应y为负数的情况
 	//初始化
@@ -348,8 +348,8 @@ void scanConversionPolygon(const point pp[],int count,color_t color){
 
 
 //区域填充4连通
-void floodFill4(int x,int y,color_t oldColor,color_t newColor){
-	if(getpixel(setCoordinateX(x),setCoordinateY(y))==oldColor){
+void floodFill4(int x,int y,ege::color_t oldColor,ege::color_t newColor){
+	if(getpixelRK(x,y)==oldColor){
 		putpixelRK(x,y,newColor);
 		floodFill4(x,y+1,oldColor,newColor);
 		floodFill4(x,y-1,oldColor,newColor);
@@ -360,8 +360,8 @@ void floodFill4(int x,int y,color_t oldColor,color_t newColor){
 }
 
 //调用时可以不指定oldColor
-void startFloodFill4(int x,int y,color_t color){
-	floodFill4(x,y,getpixel(setCoordinateX(x),setCoordinateY(y)),color);
+void startFloodFill4(int x,int y,ege::color_t color){
+	floodFill4(x,y,getpixelRK(x,y),color);
 }
 
 typedef struct{
@@ -376,7 +376,7 @@ Span constructSpan(int y,int xLeft,int xRight){
 	return span;
 }
 
-void fillAdjacentScanLines(stack<Span> &ss,Span &span,int y,color_t oldColor,color_t newColor){
+void fillAdjacentScanLines(stack<Span> &ss,Span &span,int y,ege::color_t oldColor,ege::color_t newColor){
 	int cursor,xleft;
 	bool isConfirmLeftBoundary=false;
 	//确定左边界
@@ -413,7 +413,7 @@ void fillAdjacentScanLines(stack<Span> &ss,Span &span,int y,color_t oldColor,col
 	}
 }
 
-void scanLineFill(int x,int y,color_t oldColor,color_t newColor){
+void scanLineFill(int x,int y,ege::color_t oldColor,ege::color_t newColor){
 	int cursor;
 	Span span;
 	span.y=y;
@@ -445,13 +445,13 @@ void scanLineFill(int x,int y,color_t oldColor,color_t newColor){
 	}
 }
 
-void startScanLineFill(int x,int y,color_t color){
+void startScanLineFill(int x,int y,ege::color_t color){
 	scanLineFill(x,y,getpixelRK(x,y),color);
 }
 
 
 
-void drawRectangle(ege::ege_rect rect,color_t color){
+void drawRectangle(ege::ege_rect rect,ege::color_t color){
 	MidPointLineX(rect.x,rect.y,rect.x,rect.y+rect.h,color);
 	MidPointLineX(rect.x,rect.y+rect.h,rect.x+rect.w,rect.y+rect.h,color);
 	MidPointLineX(rect.x+rect.w,rect.y+rect.h,rect.x+rect.w,rect.y,color);
@@ -477,7 +477,7 @@ void CompOutCode(float x,float y,ege::ege_rect *rect,OutCode *outCode){
 }
 
 //CohenSutherland算法实现直线段剪裁
-void CohenSutherlandLineClip(float x0,float y0,float x1,float y1,ege::ege_rect *rect,color_t color=0){
+void CohenSutherlandLineClip(float x0,float y0,float x1,float y1,ege::ege_rect *rect,ege::color_t color=0){
 	boolean accept,done;
 	OutCode outCode0,outCode1;
 	OutCode *outCodeOut;

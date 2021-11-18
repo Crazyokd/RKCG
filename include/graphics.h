@@ -9,27 +9,27 @@
 * E-Mail:       mailto:misakamm[at gmail com]
 *
 * FileName: graphics.h
-* ÔÚ VC ÏÂÄ£Äâ Borland BGI »æÍ¼¿â£¬ÊµÏÖ¼òµ¥µÄ»æÍ¼Ö®Óà£¬À©Õ¹ÁË½Ï¸´ÔÓµÄ»æÍ¼ÄÜÁ¦
+* ï¿½ï¿½ VC ï¿½ï¿½Ä£ï¿½ï¿½ Borland BGI ï¿½ï¿½Í¼ï¿½â£¬Êµï¿½Ö¼òµ¥µÄ»ï¿½Í¼Ö®ï¿½à£¬ï¿½ï¿½Õ¹ï¿½Ë½Ï¸ï¿½ï¿½ÓµÄ»ï¿½Í¼ï¿½ï¿½ï¿½ï¿½
 *
-* °üº¬²¢Ê¹ÓÃ±¾¿âÊ±£¬²»Òª°üº¬conio.hÍ·ÎÄ¼þ
-* ÕâÐ©Í·ÎÄ¼þ²»Ó¦¹²´æ£¬·ñÔò¿ÉÄÜ»á±àÒë´íÎó£¬
-* »òÕßgetch±»conio.hÄÚµÄ¸²¸Ç£¨ÓÉ°üº¬´ÎÐò¾ö¶¨£©£¬Çë×¢Òâ
-* ÈçÐè¹²´æ£¬ÇëÊ¹ÓÃ¶àÎÄ¼þ·Ö¿ª°üº¬µÄÄ£Ê½Ê¹ÓÃ£¬
-* ¼´²»ÄÜÒ»¸öcppÍ¬Ê±°üº¬£¬µ«¿ÉÒÔ·Ö¿ª°üº¬
-* Ê¹ÓÃ±¾¿â£¬±ØÐëÓÃC++±àÒë£¬¿ÉÖ§³ÖµÄ±àÒëÆ÷£º
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Ã±ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½conio.hÍ·ï¿½Ä¼ï¿½
+* ï¿½ï¿½Ð©Í·ï¿½Ä¼ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½æ£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* ï¿½ï¿½ï¿½ï¿½getchï¿½ï¿½conio.hï¿½ÚµÄ¸ï¿½ï¿½Ç£ï¿½ï¿½É°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×¢ï¿½ï¿½
+* ï¿½ï¿½ï¿½è¹²ï¿½æ£¬ï¿½ï¿½Ê¹ï¿½Ã¶ï¿½ï¿½Ä¼ï¿½ï¿½Ö¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½Ê¹ï¿½Ã£ï¿½
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½cppÍ¬Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô·Ö¿ï¿½ï¿½ï¿½ï¿½ï¿½
+* Ê¹ï¿½Ã±ï¿½ï¿½â£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½C++ï¿½ï¿½ï¿½ë£¬ï¿½ï¿½Ö§ï¿½ÖµÄ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 * VC6/VC2008/VC2010/VC2012/VC2013/MinGW3.4.5/MinGW4.7.1/MinGW4.8.1
 *********************************************************/
 
 /****************************************************************************
-** ×¢ÒâÊÂÏî£º
-* ¡ïÈç¹ûÐèÒªÏÔÊ¾¿ØÖÆÌ¨´°¿Ú£¬ÇëÔÚ°üº¬±¾ÎÄ¼þµÄÇ°Ãæ¼ÓÒ»ÐÐdefine SHOW_CONSOLE
-* ¡ïµ÷ÓÃSleepÕâ¸öAPIÊ±£¬»òÕßµ÷ÓÃdelay£¬Êµ¼Ê¾ù»á×ª»¯Îªµ÷ÓÃdelay_ms£¬Èç±ØÐèµ÷ÓÃAPIÇëÊ¹ÓÃapi_sleep
-* ¡ïdelay_ms(0)ÄÜ×ÔÐÐÅÐ¶ÏÓÐÃ»ÓÐ¸üÐÂµÄ±ØÒª£¬Á¬Ðø¶à´Îµ«²»´óÁ¿µÄµ÷ÓÃ²¢²»»á²úÉúÖ¡ÂÊµÄÓ°Ïì
-* ¡ïµ÷ÓÃdelay_ms, delay_fps, getch, GetMouseMsg Ê±£¬´°¿ÚÄÚÈÝ¿ÉÄÜ»á¸üÐÂ£¬ÕâÐ©º¯ÊýÏàµ±ÓÚÄÚÖÃÁËdelay_ms(0)£¬
-*   Èç¹ûÄãÖ»ÐèÒª¸üÐÂ´°¿Ú£¬¶ø²»ÏëµÈ´ý£¬¿ÉÒÔÓÃdelay_ms(0),Sleep(0)»òÕßdelay(0)
-* ¡ïÈç¹ûÄãÊ¹ÓÃÁËËø¶¨Ä£Ê½»æÍ¼£¬ÄÇ¿ÉÒÔÊ¹ÓÃWindowFlush´úÌædelay(0)£¬µ«²»ÄÜ´úÌæ·Ç0µÄdelay
-* ¡ïºÏÀíµØÊ¹ÓÃdelayº¯Êý£¬¿ÉÒÔ¼õÉÙÄãµÄ³ÌÐòÕ¼ÓÃµÄCPU£¬·ñÔòÒ»¸ödelay¶¼Ã»ÓÐµ÷ÓÃµÄ»°£¬³ÌÐò½«Õ¼ÂúÒ»¸öCPUµÄÊ±¼ä
-* ¡ïsetfillstyleº¯ÊýµÄ×Ô¶¨ÒåÌî³äÄ£Ê½Î´ÊµÏÖ£¬µ«Ò»°ãÓ¦ÓÃ×ã¹»
+** ×¢ï¿½ï¿½ï¿½ï¿½ï¿½î£º
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½Ì¨ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½Ò»ï¿½ï¿½define SHOW_CONSOLE
+* ï¿½ï¿½ï¿½ï¿½ï¿½Sleepï¿½ï¿½ï¿½APIÊ±ï¿½ï¿½ï¿½ï¿½ï¿½ßµï¿½ï¿½ï¿½delayï¿½ï¿½Êµï¿½Ê¾ï¿½ï¿½ï¿½×ªï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½delay_msï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½APIï¿½ï¿½Ê¹ï¿½ï¿½api_sleep
+* ï¿½ï¿½delay_ms(0)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½Ã»ï¿½Ð¸ï¿½ï¿½ÂµÄ±ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½ï¿½Ã²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¡ï¿½Êµï¿½Ó°ï¿½ï¿½
+* ï¿½ï¿½ï¿½ï¿½ï¿½delay_ms, delay_fps, getch, GetMouseMsg Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½ï¿½Ü»ï¿½ï¿½ï¿½Â£ï¿½ï¿½ï¿½Ð©ï¿½ï¿½ï¿½ï¿½ï¿½àµ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½delay_ms(0)ï¿½ï¿½
+*   ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½Òªï¿½ï¿½ï¿½Â´ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½delay_ms(0),Sleep(0)ï¿½ï¿½ï¿½ï¿½delay(0)
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½Ç¿ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½WindowFlushï¿½ï¿½ï¿½ï¿½delay(0)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü´ï¿½ï¿½ï¿½ï¿½0ï¿½ï¿½delay
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½delayï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½Ä³ï¿½ï¿½ï¿½Õ¼ï¿½Ãµï¿½CPUï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½delayï¿½ï¿½Ã»ï¿½Ðµï¿½ï¿½ÃµÄ»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¼ï¿½ï¿½Ò»ï¿½ï¿½CPUï¿½ï¿½Ê±ï¿½ï¿½
+* ï¿½ï¿½setfillstyleï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½Î´Êµï¿½Ö£ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ã¹»
 ****************************************************************************/
 
 #ifndef _GRAPHICS_H_
@@ -40,6 +40,8 @@
 #endif
 
 #include "ege.h"
-using namespace ege;
+
+//å¼ºåˆ¶ä½¿ç”¨egeå‘½ä»¤ç©ºé—´
+// using namespace ege;
 
 #endif
