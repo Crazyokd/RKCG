@@ -549,4 +549,157 @@ inline void seedFill(const point &seed, const ege::color_t fillColor, const ege:
 	egeSeedFill(setCoordinateX(seed.x), setCoordinateY(seed.y), fillColor, borderColor);
 }
 
+struct Rectangle {
+    int top, bottom, right, left;
+
+    Rectangle(int top, int bottom, int right, int left)
+        : top(top), bottom(bottom), right(right), left(left) {}
+
+    inline void draw(const ege::color_t color = ege::COLORS::BLACK) const {
+        rkcg::connectPoints(
+            std::vector<rkcg::point>{
+                {left, top},
+                {right, top},
+                {right, bottom},
+                {left, bottom},
+            }
+        );
+    }
+};
+
+inline void drawPoint(const int x, const int y, const ege::color_t color = ege::COLORS::BLACK, const int radius = 2) {
+    rkcg::drawCircle(radius, color, x, y);
+    rkcg::seedFill(x, y, color, color);
+}
+
+struct Segment {
+    int x0, y0, x1, y1;
+
+    Segment(int x0, int y0, int x1, int y1)
+        : x0(x0), y0(y0), x1(x1), y1(y1) {}
+
+    inline void draw(const ege::color_t color = ege::COLORS::BLACK) {
+        rkcg::drawPoint(x0, y0, color);
+        rkcg::drawPoint(x1, y1, color);
+    }
+};
+
+struct Code {
+    unsigned int top, bottom, right, left;
+
+    Code(unsigned int top, unsigned int bottom, unsigned int right, unsigned int left)
+        : top(top), bottom(bottom), right(right), left(left) {}
+
+    inline unsigned all() const {
+        return top << 3 | bottom << 2 | right << 1 | left;
+    }
+};
+
+inline Code calcCode(const int x, const int y, const Rectangle &rect) {
+    return Code(
+        y > rect.top ? 1 : 0,
+        y < rect.bottom ? 1 : 0,
+        x > rect.right ? 1 : 0,
+        x < rect.left ? 1 : 0
+    );
+}
+
+void CohenSutherlandLineClip(const Segment &segment, const Rectangle &rect, const ege::color_t color = ege::COLORS::BLACK) {
+    bool accept = false, done = false;
+    double x0 = segment.x0, y0 = segment.y0, x1 = segment.x1, y1 = segment.y1;
+    double x = x0, y = y0;
+    Code code0 = calcCode(x0, y0, rect), code1 = calcCode(x1, y1, rect);
+    Code code = code0;
+
+    do {
+        if (code0.all() == 0 && code1.all() == 0) {
+            accept = done = true;
+        } else if (code0.all() & code1.all()) {
+            done = true;
+        } else {
+            bool flag = false;
+            if (code0.all()) {
+                code = code0;
+                flag = true;
+            } else {
+                code = code1;
+            }
+
+            if (code.top) {
+                y = rect.top;
+                x = x0 + (x1 - x0) * (y - y0) / (y1 - y0);
+            } else if (code.bottom) {
+                y = rect.bottom;
+                x = x0 + (x1 - x0) * (y - y0) / (y1 - y0);
+            } else if (code.right) {
+                x = rect.right;
+                y = y0 + (y1 - y0) * (x - x0) / (x1 - x0);
+            } else if (code.left) {
+                x = rect.left;
+                y = y0 + (y1 - y0) * (x - x0) / (x1 - x0);
+            }
+
+            if (flag) {
+                x0 = x;
+                y0 = y;
+                code0 = calcCode(x0, y0, rect);
+            } else {
+                x1 = x;
+                y1 = y;
+                code1 = calcCode(x1, y1, rect);
+            }
+        }
+    } while (!done);
+
+    if (accept) {
+        rkcg::MidPointLineX(x0, y0, x1, y1, color);
+    }
+}
+
+bool ClipT(const double q, const double d, double &t0, double &t1) {
+    double r;
+
+    if (q < 0) {
+        r = d / q;
+        if (r > t1) {
+            return false;
+        } else if (r > t0) {
+            t0 = r;
+            return true;
+        }
+    } else if (q > 0) {
+        r = d / q;
+        if (r < t0) {
+            return false;
+        } else if (r < t1) {
+            t1 = r;
+            return true;
+        }
+    }
+    return d >= 0;
+}
+
+void LiangBarskyLineClip(const double x0, const double y0,
+                         const double x1, const double y1,
+                         const Rectangle &rect, const ege::color_t color = ege::COLORS::BLACK) {
+    double dx = x1 - x0, dy, t0 = 0, t1 = 1;
+
+    if (ClipT(-dx, x0 - rect.left, t0, t1) && ClipT(dx, rect.right - x0, t0, t1)) {
+        dy = y1 - y0;
+        if (ClipT(-dy, y0 - rect.bottom, t0, t1) && ClipT(dy, rect.top - y0, t0, t1)) {
+            MidPointLineX(
+                x0 + t0 * dx,
+                y0 + t0 * dy,
+                x0 + t1 * dx,
+                y0 + t1 * dy,
+                color
+            );
+        }
+    }
+}
+
+inline void LiangBarskyLineClip(const Segment &segment, const Rectangle &rect, const ege::color_t color = ege::COLORS::BLACK) {
+    LiangBarskyLineClip(segment.x0, segment.y0, segment.x1, segment.y1, rect, color);
+}
+
 }
