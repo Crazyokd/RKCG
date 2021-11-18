@@ -465,22 +465,15 @@ typedef struct{
 void CompOutCode(float x,float y,ege::ege_rect *rect,OutCode *outCode){
 	//编码方式tbrl
 	outCode->all=0;
-	outCode->top=outCode->bottom=0;
-	if(y>(float)rect->y+rect->h){
-		outCode->top=1;
-		outCode->all+=8;
-	}else if(y < (float)rect->y){
-		outCode->bottom=1;
-		outCode->all+=4;
-	}
-	outCode->right=outCode->left=0;
-	if(x>(float)rect->x+rect->w){
-		outCode->right=1;
-		outCode->all+=2;
-	}else if(x<(float)rect->x){
-		outCode->left=1;
-		outCode->all+=1;
-	}
+	outCode->top = y>(float)rect->y+rect->h ? 1 : 0;
+	outCode->bottom = y<(float)rect->y ? 1 : 0;
+	outCode->right = x>(float)rect->x+rect->w ? 1 : 0;
+	outCode->left = x<(float)rect->x ? 1 : 0;
+
+	outCode->all += outCode->top;
+	outCode->all <<= 1;outCode->all += outCode->bottom;
+	outCode->all <<= 1;outCode->all += outCode->right;
+	outCode->all <<= 1;outCode->all += outCode->left;
 }
 
 //CohenSutherland算法实现直线段剪裁
