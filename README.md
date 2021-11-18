@@ -17,8 +17,12 @@
 试试这行命令：
 
 ```bat
-.\test.bat hello
+.\test.bat example
 ```
+
+不出意外的话，你会看到一个带有简单坐标系的窗口，实际上这行命令会编译 [example.cpp](example.cpp) 并执行，你可以通过编辑该文件来绘制你自己的图形。
+
+![example](resource/images/example-screenshot.png)
 
 # 项目进度
 

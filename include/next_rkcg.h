@@ -1,4 +1,4 @@
-#include "graphics.h"					//包含EGE的头文件
+#include "next_graphics.h"					//包含EGE的头文件
 #include <iostream>
 #include <cmath>
 #include <algorithm>
@@ -177,21 +177,21 @@ void connectPoints(const point points[], const int len, const ege::color_t color
 void drawArrow(const int x0,const int y0,const int x1,const int y1,const ege::color_t color) {
 	MidPointLineX(x0,y0,x1,y1,color);
 	double angle;
-	if (x0 == x1)angle = PI / 2;
+	if (x0 == x1)angle = ege::PI / 2;
 	else angle = atan(1.0*(y1 - y0) / (x1 - x0));
 	int rarrowx,rarrowy,larrowx,larrowy;
 	if(x1>x0 || y1>y0){
 		//左箭头
-		rarrowx = x1 - 10 * cos(PI / 6 + angle);
-		rarrowy = y1 - 10 * sin(PI / 6 + angle);
-		larrowx = x1 - 10 * sin(PI / 3 + angle);
-		larrowy = y1 + 10 * cos(PI / 3 + angle);
+		rarrowx = x1 - 10 * cos(ege::PI / 6 + angle);
+		rarrowy = y1 - 10 * sin(ege::PI / 6 + angle);
+		larrowx = x1 - 10 * sin(ege::PI / 3 + angle);
+		larrowy = y1 + 10 * cos(ege::PI / 3 + angle);
 	}else{
 		//右箭头
-		rarrowx = x1 + 10 * cos(PI / 6 + angle);
-		rarrowy = y1 + 10 * sin(PI / 6 + angle);
-		larrowx = x1 + 10 * sin(PI / 3 + angle);
-		larrowy = y1 - 10 * cos(PI / 3 + angle);
+		rarrowx = x1 + 10 * cos(ege::PI / 6 + angle);
+		rarrowy = y1 + 10 * sin(ege::PI / 6 + angle);
+		larrowx = x1 + 10 * sin(ege::PI / 3 + angle);
+		larrowy = y1 - 10 * cos(ege::PI / 3 + angle);
 	}
 	MidPointLineX(rarrowx,rarrowy,x1,y1,color);
 	MidPointLineX(larrowx,larrowy,x1,y1,color);
@@ -201,10 +201,10 @@ void drawScale(const int x0,const int y0,const int x1,const int y1,const ege::co
 	MidPointLineX(x0,y0,x1,y1,color);
 	int x = x0, y = y0;
 	double angle;
-	if (x0 == x1)angle = PI / 2;
+	if (x0 == x1)angle = ege::PI / 2;
 	else angle = atan(1.0*(y1 - y0) / (x1 - x0));
 	while (x <= x1&&y<=y1) {
-		MidPointLineX(x - 5 * cos(PI / 2 - angle), y + 5 * sin(PI / 2 - angle),x,y,color);
+		MidPointLineX(x - 5 * cos(ege::PI / 2 - angle), y + 5 * sin(ege::PI / 2 - angle),x,y,color);
 		x = x + 50 * cos(angle);
 		y = y + 50 * sin(angle);
 	}
@@ -230,10 +230,10 @@ void createCanvas(const int width, const int height, const ege::color_t bgColor 
 	const int y_bottom_x = 0;
 	const int y_bottom_y = -half_height + shift;
 
-	initgraph(width, height);
-	setbkcolor(bgColor);
+	ege::initgraph(width, height);
+	ege::setbkcolor(bgColor);
 	setcolor(ege::COLORS::BLACK);
-	setfont(20, 0, "宋体");
+	ege::setfont(20, 0, "宋体");
 
 	drawArrow(x_left_x, x_left_y, x_right_x, x_right_y, axis_color);
 	drawArrow(y_bottom_x, y_bottom_y, y_top_x, y_top_y, axis_color);
@@ -426,7 +426,7 @@ inline void scanConversionPolygon(const std::vector<point> &points, const ege::c
 
 //区域填充4连通
 void floodFill4(int x,int y,const ege::color_t oldColor,const ege::color_t newColor){
-	if(getpixel(setCoordinateX(x),setCoordinateY(y))==oldColor){
+	if(ege::getpixel(setCoordinateX(x),setCoordinateY(y))==oldColor){
 		putpixelRK(x,y,newColor);
 		floodFill4(x,y+1,oldColor,newColor);
 		floodFill4(x,y-1,oldColor,newColor);
@@ -438,7 +438,7 @@ void floodFill4(int x,int y,const ege::color_t oldColor,const ege::color_t newCo
 
 //调用时可以不指定oldColor
 void startFloodFill4(int x,int y,const ege::color_t color){
-	floodFill4(x,y,getpixel(setCoordinateX(x),setCoordinateY(y)),color);
+	floodFill4(x,y,ege::getpixel(setCoordinateX(x),setCoordinateY(y)),color);
 }
 
 struct Span {

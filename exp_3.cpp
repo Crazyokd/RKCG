@@ -6,19 +6,12 @@
  * 	B：种子填充算法
  */
 
-#include "next_rkcg.h"
+#include "include/next_rkcg.h"
 
 #include <string>
 #include <vector>
 
-int main() {
-	// 初始化画布
-	const int WIDTH = 800, HEIGHT = 800;
-	const ege::color_t BG_COLOR = ege::COLORS::WHITE;
-	rkcg::createCanvas(WIDTH, HEIGHT, BG_COLOR);
-
-	// 实验代码 begin
-
+void draw() {
 	// 图形 A
 	std::cout << "begin " << std::endl;
 	const std::vector<rkcg::point> aPoints{
@@ -51,13 +44,19 @@ int main() {
 	const rkcg::point seed{(p0.x + p1.x) >> 1, (p0.y + p1.y) >> 1};
 	// 注意边界颜色和填充颜色不要和坐标轴颜色（也就是黑色）相同
 	seedFill(seed, ege::COLORS::BLUE, ege::COLORS::RED);
+}
 
-	// 实验代码 end
+int main() {
+	// 初始化画布
+	const int WIDTH = 800, HEIGHT = 800;
+	const ege::color_t BG_COLOR = ege::COLORS::WHITE;
+	rkcg::createCanvas(WIDTH, HEIGHT, BG_COLOR);
 
+	draw();
 
 	// UI 关闭才退出程序
 	while (ege::is_run()) {
-		delay(1000);
+		ege::delay(1000);
 		// std::cout << "running" << std::endl;
 	}
 	return 0;
