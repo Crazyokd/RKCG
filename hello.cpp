@@ -1,5 +1,6 @@
 #include"rkcg.h"
 
+using namespace rkcg;
 int main()
 {
 	ege::initgraph(640, 480);				//初始化图形界面
