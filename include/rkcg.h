@@ -3,6 +3,7 @@
 #include <cmath>
 #include <algorithm>
 #include <stack>
+#include <vector>
 
 namespace rkcg{
 	// 将x坐标转换为一般坐标系x坐标
@@ -564,5 +565,76 @@ namespace rkcg{
 			}
 		}
 		std::cout<<"完全不可见";
+	}
+
+
+
+	//图形变换
+	//通过点集画出一个多边形
+	void getPolygonFromPoints(std::vector<point> points,ege::color_t color){
+		if(points.empty())return;
+		point first_point = points.back();
+		point pre_point = first_point;
+		points.pop_back();
+
+		while(!points.empty()){
+			point cur_point = points.back();
+			MidPointLineX(pre_point.x,pre_point.y,cur_point.x,cur_point.y,color);
+			pre_point = cur_point;
+			points.pop_back();
+		}
+		MidPointLineX(pre_point.x,pre_point.y,first_point.x,first_point.y,color);
+	}
+
+
+	#define TRANSLATION 0	//平移
+	#define PROPORTION 1	//比例
+	#define ROTATE 2		//旋转
+	//矩阵乘法
+	point matrixMultiplication(point pit,float tx,float ty,int type,int angle){
+		//定义通用矩阵
+		float transformation[3][3]={
+			{1,0,0},
+			{0,1,0},
+			{0,0,1}
+		};
+		float point_of_transformation[3]={
+			0,0,1
+		};
+		point_of_transformation[0]=pit.x,point_of_transformation[1]=pit.y;
+		float res[3]={
+			0,0,0
+		};
+		if(type == TRANSLATION){
+			transformation[2][0] = tx;
+			transformation[2][1] = ty;
+		}else if(type == PROPORTION){
+			transformation[0][0] = tx;
+			transformation[1][1] = ty;
+		}else if(type == ROTATE){
+			double radian = angle*ege::PI / 180;
+			transformation[0][0] = transformation[1][1] = cos(radian);
+			transformation[0][1] = sin(radian);
+			transformation[1][0] = -transformation[0][1];
+		}else{
+			std::cout << "指定的类型无效" << std::endl;
+		}
+		//matrixMultiplication
+		for(int i=0;i<3;i++){
+			for(int j=0;j<3;j++){
+				res[i]+=point_of_transformation[j]*transformation[j][i];
+			}
+		}
+		return point(res[0],res[1]);
+	}
+	//依据type确定变换类型。
+	//【当指定type=ROTATE时，tx、ty失效】
+	void transformationFromType(std::vector<point> points,float tx,float ty,int type,ege::color_t color,int angle=0){
+		std::vector<point> pre_points;
+		while(!points.empty()){
+			pre_points.push_back(matrixMultiplication(points.back(),tx,ty,type,angle));
+			points.pop_back();
+		}
+		getPolygonFromPoints(pre_points,color);
 	}
 }

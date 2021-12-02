@@ -26,8 +26,6 @@ int main()
 	// CircleBres(100,0);
 	// drawCircle(100,0,50,50);//画圆,指定圆心坐标
 	// drawEllipse(50,70,0,50,50);
-	point pp[]={*(new point(50,10)),*(new point(20,40)),*( new point(20,80)),*(new point(70,70)),*(new point(120,110)),
-		*(new point(120,50)),*(new point(70,10))};
 	// scanConversionPolygon(pp,7,0x777777);
 	// scanConversionPolygon(pp,7,ege::RED);
 	point pp2[]={*(new point(-50,-50)),*(new point(-50,0)),*(new point(0,0)),*(new point(0,-50))};
@@ -44,18 +42,30 @@ int main()
 	// startFloodFill4(-25,-25,ege::BLUE);
 	// startScanLineFill(65,25,ege::BLUE);
 
-	ege::ege_rect rect=ege::ege_rect();
-	rect.x=rect.y=-50;
-	rect.w=rect.h=100;
-	drawRectangle(rect,ege::COLORS::RED);
-	CohenSutherlandLineClip(-100,-100,100,100,&rect);
-	CohenSutherlandLineClip(-25,-75,25,75,&rect);
-	LiangBarskyLineClip(-100,-100,100,100,&rect);
+	// ege::ege_rect rect=ege::ege_rect();
+	// rect.x=rect.y=-50;
+	// rect.w=rect.h=100;
+	// drawRectangle(rect,ege::COLORS::RED);
+	// CohenSutherlandLineClip(-100,-100,100,100,&rect);
+	// CohenSutherlandLineClip(-25,-75,25,75,&rect);
+	// LiangBarskyLineClip(-100,-100,100,100,&rect);
 
-	CohenSutherlandLineClip(-25,25,25,-25,&rect);
-	// LiangBarskyLineClip(-25,25,25,-25,&rect);
-	LiangBarskyLineClip(200,-50,200,50,&rect);
-
+	// CohenSutherlandLineClip(-25,25,25,-25,&rect);
+	// // LiangBarskyLineClip(-25,25,25,-25,&rect);
+	// LiangBarskyLineClip(200,-50,200,50,&rect);
+	std::vector<point> points;
+	points.push_back(point(50,10));
+	points.push_back(point(20,40));
+	points.push_back(point(20,80));
+	points.push_back(point(70,70));
+	points.push_back(point(120,110));
+	points.push_back(point(120,50));
+	points.push_back(point(70,10));
+	getPolygonFromPoints(points,0);
+	transformationFromType(points,-50,0,TRANSLATION,0);
+	transformationFromType(points,1.5,1.5,PROPORTION,0);
+	transformationFromType(points,0,0,ROTATE,0,60);
+	
 	ege::getch();							//暂停，等待键盘按键
 	ege::closegraph();						//关闭图形界面
 	return 0;
