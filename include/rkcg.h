@@ -590,6 +590,9 @@ namespace rkcg{
 	#define TRANSLATION 0	//平移
 	#define PROPORTION 1	//比例
 	#define ROTATE 2		//旋转
+	#define SYMMETRICX 3		//关于X轴对称
+	#define SYMMETRICY 4		//关于Y轴对称
+
 	//矩阵乘法
 	point matrixMultiplication(point pit,float tx,float ty,int type,int angle){
 		//定义通用矩阵
@@ -616,6 +619,10 @@ namespace rkcg{
 			transformation[0][0] = transformation[1][1] = cos(radian);
 			transformation[0][1] = sin(radian);
 			transformation[1][0] = -transformation[0][1];
+		}else if(type == SYMMETRICX){
+			transformation[1][1] = -1;
+		}else if(type == SYMMETRICY){
+			transformation[0][0] = -1;
 		}else{
 			std::cout << "指定的类型无效" << std::endl;
 		}
@@ -629,12 +636,29 @@ namespace rkcg{
 	}
 	//依据type确定变换类型。
 	//【当指定type=ROTATE时，tx、ty失效】
-	void transformationFromType(std::vector<point> points,float tx,float ty,int type,ege::color_t color,int angle=0){
+	std::vector<point> transformationFromType(std::vector<point> points,int type,float tx=0,float ty=0,int angle=0){
 		std::vector<point> pre_points;
 		while(!points.empty()){
 			pre_points.push_back(matrixMultiplication(points.back(),tx,ty,type,angle));
 			points.pop_back();
 		}
-		getPolygonFromPoints(pre_points,color);
+		// getPolygonFromPoints(pre_points,0);
+		return pre_points;
+	}
+
+	//关于任意的反射轴 cy=a+bx 进行反射变换
+	std::vector<point> reflectionTransformationByArbitraryLine(std::vector<point> points,float a,float b,float c){
+		int angle = atan(b)*180 / ege::PI >= 0 ? atan(b)*180 / ege::PI : 180+atan(b)*180 / ege::PI;
+		std::vector<point> pre_points;
+		//使反射轴与坐标轴重合
+		if(c == 0){	//与y轴平行
+			pre_points = transformationFromType(transformationFromType(points,TRANSLATION,a/b,0),SYMMETRICY);
+			return transformationFromType(pre_points,TRANSLATION,-a/b,0);
+		}else{	//普通情况
+			//平移——》旋转——》对称
+			pre_points = transformationFromType(transformationFromType(transformationFromType(points,TRANSLATION,0,-a),ROTATE,0,0,-angle),SYMMETRICX);
+			//旋转——》平移
+			return transformationFromType(transformationFromType(pre_points,ROTATE,0,0,angle),TRANSLATION,0,a);
+		}
 	}
 }

@@ -54,18 +54,31 @@ int main()
 	// // LiangBarskyLineClip(-25,25,25,-25,&rect);
 	// LiangBarskyLineClip(200,-50,200,50,&rect);
 	std::vector<point> points;
-	points.push_back(point(50,10));
-	points.push_back(point(20,40));
-	points.push_back(point(20,80));
-	points.push_back(point(70,70));
-	points.push_back(point(120,110));
-	points.push_back(point(120,50));
-	points.push_back(point(70,10));
-	getPolygonFromPoints(points,0);
-	transformationFromType(points,-50,0,TRANSLATION,0);
-	transformationFromType(points,1.5,1.5,PROPORTION,0);
-	transformationFromType(points,0,0,ROTATE,0,60);
-	
+	// points.push_back(point(50,10));
+	// points.push_back(point(20,40));
+	// points.push_back(point(20,80));
+	// points.push_back(point(70,70));
+	// points.push_back(point(120,110));
+	// points.push_back(point(120,50));
+	// points.push_back(point(70,10));
+	// getPolygonFromPoints(points,0);
+	// // 演示五种基础变换
+	// getPolygonFromPoints(transformationFromType(points,TRANSLATION,-50,0),0);
+	// getPolygonFromPoints(transformationFromType(points,PROPORTION,1.5,1.5),0);
+	// getPolygonFromPoints(transformationFromType(points,ROTATE,0,0,60),0);
+	// getPolygonFromPoints(transformationFromType(points,SYMMETRICX),0);
+	// getPolygonFromPoints(transformationFromType(points,SYMMETRICY),0);
+
+	// points.push_back(point(50,50));
+	// points.push_back(point(100,50));
+	// points.push_back(point(100,100));
+	// getPolygonFromPoints(points,0);
+	// //y=50+x;
+	// MidPointLineX(0,50,150,200,0);
+	// getPolygonFromPoints(reflectionTransformationByArbitraryLine(points,50,1,1),0);
+	// getPolygonFromPoints(reflectionTransformationByArbitraryLine(points,-20,1,0),0);
+	// getPolygonFromPoints(reflectionTransformationByArbitraryLine(points,20,0,1),0);
+
 	ege::getch();							//暂停，等待键盘按键
 	ege::closegraph();						//关闭图形界面
 	return 0;
