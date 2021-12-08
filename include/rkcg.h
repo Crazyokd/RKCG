@@ -568,10 +568,11 @@ namespace rkcg{
 	}
 
 
-
+	//
 	//图形变换
-	//通过点集画出一个多边形
-	void getPolygonFromPoints(std::vector<point> points,ege::color_t color){
+	//
+	//按顺序连接各点，但首尾不连接
+	void connectPoints(std::vector<point> points,ege::color_t color){
 		if(points.empty())return;
 		point first_point = points.back();
 		point pre_point = first_point;
@@ -583,9 +584,13 @@ namespace rkcg{
 			pre_point = cur_point;
 			points.pop_back();
 		}
-		MidPointLineX(pre_point.x,pre_point.y,first_point.x,first_point.y,color);
 	}
 
+	//通过点集画出一个多边形
+	void getPolygonFromPoints(std::vector<point> points,ege::color_t color){
+		MidPointLineX(points[0].x,points[0].y,points[points.size()-1].x,points[points.size()-1].y,color);
+		connectPoints(points,color);
+	}
 
 	#define TRANSLATION 0	//平移
 	#define PROPORTION 1	//比例
@@ -661,4 +666,35 @@ namespace rkcg{
 			return transformationFromType(transformationFromType(pre_points,ROTATE,0,0,angle),TRANSLATION,0,a);
 		}
 	}
+
+	int fac(int n){
+		if (n == 1 || n == 0)
+			return 1;
+		else
+			return n * fac(n - 1);
+	}
+
+	//根据给定的基准点点集得到比塞尔曲线点集
+	std::vector<point> getPointOfBezierCurve(std::vector<point> &datum_points){
+		std::vector<point> res_points;
+		double a, b;
+		double temp, temp1, temp2, bi;
+		int len=datum_points.size()-1;
+		for (double t = 0.0; t <= 1; t += 0.01){
+			a = 0.0;
+			b = 0.0;
+			for (int i = 0; i <= len; ++i){
+				temp = 1.0*fac(len) / fac(i) / fac(len - i);
+				temp1 = pow(t, i);
+				temp2 = pow(1 - t, len - i);
+				bi = temp * temp1 * temp2;
+				a += bi * datum_points[i].x;
+				b += bi * datum_points[i].y;
+			}
+			// printf("x=%lf;y=%lf\n",a,b);
+			res_points.push_back({(int)a,(int)b});
+		}
+		return res_points;
+	}
+
 }

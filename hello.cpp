@@ -69,15 +69,26 @@ int main()
 	// getPolygonFromPoints(transformationFromType(points,SYMMETRICX),0);
 	// getPolygonFromPoints(transformationFromType(points,SYMMETRICY),0);
 
-	// points.push_back(point(50,50));
-	// points.push_back(point(100,50));
-	// points.push_back(point(100,100));
-	// getPolygonFromPoints(points,0);
-	// //y=50+x;
-	// MidPointLineX(0,50,150,200,0);
-	// getPolygonFromPoints(reflectionTransformationByArbitraryLine(points,50,1,1),0);
+	points.push_back(point(50,50));
+	points.push_back(point(100,50));
+	points.push_back(point(100,100));
+	getPolygonFromPoints(points,0);
+	//y=50+x;
+	MidPointLineX(0,50,150,200,0);
+	getPolygonFromPoints(reflectionTransformationByArbitraryLine(points,50,1,1),0);
+	// MidPointLineX(20,-200,20,200,0);
 	// getPolygonFromPoints(reflectionTransformationByArbitraryLine(points,-20,1,0),0);
+	// MidPointLineX(-200,20,200,20,0);
 	// getPolygonFromPoints(reflectionTransformationByArbitraryLine(points,20,0,1),0);
+
+	std::vector<point> datum_points;
+	datum_points.push_back({140, 25});
+	datum_points.push_back({150, 100});
+	datum_points.push_back({175, 125});
+	datum_points.push_back({200, 25});
+	
+	connectPoints(getPointOfBezierCurve(datum_points),0);
+
 
 	ege::getch();							//暂停，等待键盘按键
 	ege::closegraph();						//关闭图形界面
