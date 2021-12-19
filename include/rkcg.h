@@ -19,13 +19,15 @@ namespace rkcg{
 
 	//对putpixel函数做一层坐标系上的封装
 	void putpixelRK(int x,int y,ege::color_t color,int z=0){
-		ege::putpixel(setCoordinateX(x)-z*DEVIATION,setCoordinateY(y)-z*DEVIATION,color);
+		ege::putpixel(setCoordinateX(x-z*DEVIATION),setCoordinateY(y-z*DEVIATION),color);
 	}
 
 	//对getpixel函数做一层坐标系上的封装
 	ege::color_t getpixelRK(int x,int y,int z=0){
-		return ege::getpixel(setCoordinateX(x)-z*DEVIATION,setCoordinateY(y)-z*DEVIATION);
+		return ege::getpixel(setCoordinateX(x-z*DEVIATION),setCoordinateY(y-z*DEVIATION));
 	}
+
+
 
 	//斜率范围为[0,1]时的中点画线法
 	void MidPointLine0To1(int x0, int y0, int x1, int y1, ege::color_t color) {
@@ -151,23 +153,49 @@ namespace rkcg{
 		}
 	}
 
+
+
+	//绘制画布
+	void drawCanvas(){
+		ege::initgraph(640, 480);				//初始化图形界面
+		ege::setcolor(EGERGB(0xFF, 0x0, 0x0));	//设置绘画颜色为红色
+		ege::setbkcolor(ege::WHITE);					//设置背景颜色为白色
+
+		ege::setfont(14, 0, "宋体");
+		//写文字，注意：outtextxy不支持\t \n这类格式化用的特殊字符，这类字符会被忽略
+		//要使用特殊格式化字符请用outtextrect
+		ege::outtextxy(setCoordinateX(200), setCoordinateY(0), "X");
+		ege::outtextxy(setCoordinateX(5), setCoordinateY(200), "Y");
+		ege::outtextxy(setCoordinateX(-150),setCoordinateY(-150),"Z");
+		// outtextrect(100, 120, 200, 100, "\tHello EGE Graphics\nHere is the next line.");
+		// 画一个直角坐标系
+		drawArrow(-200,0,200,0,0);
+		drawScale(-180,0,180,0,0);
+		drawArrow(0,-200,0,200,0);
+		drawScale(0,-180,0,180,0);
+		//画Z轴
+		drawArrow(150,150,-150,-150,0);
+	}
+
+
+
 	const int CIRCLE=8;
 	const int ELLIPSE=4;
 
 	//绘制对称点
-	void drawSymmetricPoints(int x,int y,int color,int type,int x0=0,int y0=0){
+	void drawSymmetricPoints(int x,int y,int color,int type,int x0=0,int y0=0,int z=0){
 		int points[][2]={{x,y},{-x,y},{x,-y},{-x,-y},
 		{y,x},{-y,x},{y,-x},{-y,-x}};
 		for(int i=0;i<type;i++){
-			putpixelRK(points[i][0]+x0,points[i][1]+y0,color);
+			putpixelRK(points[i][0]+x0,points[i][1]+y0,color,z);
 		}
 	}
 
 	//BresenHam算法绘制圆形
-	void CircleBres(int  radius,ege::color_t color,int x0=0,int y0=0){
+	void CircleBres(int  radius,ege::color_t color,int x0=0,int y0=0,int z=0){
 		int x=0,y=radius,p=3-2*radius;
 		while (x<=y){
-			drawSymmetricPoints(x,y,color,CIRCLE,x0,y0);
+			drawSymmetricPoints(x,y,color,CIRCLE,x0,y0,z);
 			x++;
 			if (p<0)p+=(4*x+6);
 			else{
@@ -178,11 +206,11 @@ namespace rkcg{
 	}
 
 	//中点算法绘制圆形
-	void drawCircle(int radius,ege::color_t color,int x0=0,int y0=0){
+	void drawCircle(int radius,ege::color_t color,int x0=0,int y0=0,int z=0){
 		int x=0,y=radius,d=5-4*radius;
 		int deltaE=12,deltaSE=20-8*radius;
 		while(y>=x){
-			drawSymmetricPoints(x,y,color,CIRCLE,x0,y0);
+			drawSymmetricPoints(x,y,color,CIRCLE,x0,y0,z);
 			if(d<=0){
 				d+=deltaE;
 				deltaSE+=8;
@@ -197,7 +225,7 @@ namespace rkcg{
 	}
 
 	//中点算法绘制椭圆
-	void drawEllipse(int a,int b,ege::color_t color,int x0=0,int y0=0){
+	void drawEllipse(int a,int b,ege::color_t color,int x0=0,int y0=0,int z=0){
 		int x,y,d;
 		int square_a=a*a,square_b=b*b;
 		//计算分界点（斜率为1处）
@@ -208,7 +236,7 @@ namespace rkcg{
 		x=0;y=b;
 		d=4*(square_b-square_a*b)+square_a;//初始化
 		while(x<=xB){
-			drawSymmetricPoints(x,y,color,ELLIPSE,x0,y0);
+			drawSymmetricPoints(x,y,color,ELLIPSE,x0,y0,z);
 			int t=4*square_b*(2*x+3);
 			if(d<=0)d+=t;
 			else{
@@ -222,7 +250,7 @@ namespace rkcg{
 		x=a;y=0;
 		d=4*(square_a-a*square_b)+square_b;//初始化
 		while(y<yB){
-			drawSymmetricPoints(x,y,color,ELLIPSE,x0,y0);
+			drawSymmetricPoints(x,y,color,ELLIPSE,x0,y0,z);
 			int t=4*square_a*(2*y+3);
 			if(d<=0)d+=t;
 			else{
@@ -236,13 +264,8 @@ namespace rkcg{
 
 	struct point{
 		int x,y,z;
-		point(int x,int y){
-			this->x=x;
-			this->y=y;
-			this->z=0;
-		}
-		point(int x,int y,int z){
-			point(x,y);
+		point(int xx,int yy):x(xx),y(yy),z(0){}
+		point(int x,int y,int z):point(x,y){
 			this->z=z;
 		}
 	};
@@ -706,7 +729,15 @@ namespace rkcg{
 	}
 
 
+	// 使用Bezier算法绘制曲面
 	std::vector<point> drawBezierCurveSurface(std::vector<std::vector<point>> datum_points,int num = 100){
+		//将三维坐标转换为二维坐标
+		for(int i=0;i<datum_points.size();i++){
+			for(int j=0;j<datum_points[i].size();j++){
+				datum_points[i][j].x -= datum_points[i][j].z * DEVIATION;
+				datum_points[i][j].y -= datum_points[i][j].z * DEVIATION;
+			}
+		}
 		std::vector<point> res_points;
 		double a, b;
 		double temp, temp1, temp2, bi1, bi2;
