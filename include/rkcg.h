@@ -6,6 +6,8 @@
 #include <vector>
 
 namespace rkcg{
+	#define DEVIATION 0.707107		// cos(PI/4)
+
 	// 将x坐标转换为一般坐标系x坐标
 	inline int setCoordinateX(int x){
 		return ege::getwidth()/2+x;
@@ -16,14 +18,15 @@ namespace rkcg{
 	}
 
 	//对putpixel函数做一层坐标系上的封装
-	void putpixelRK(int x,int y,ege::color_t color){
-		ege::putpixel(setCoordinateX(x),setCoordinateY(y),color);
+	void putpixelRK(int x,int y,ege::color_t color,int z=0){
+		ege::putpixel(setCoordinateX(x)-z*DEVIATION,setCoordinateY(y)-z*DEVIATION,color);
 	}
 
 	//对getpixel函数做一层坐标系上的封装
-	ege::color_t getpixelRK(int x,int y){
-		return ege::getpixel(setCoordinateX(x),setCoordinateY(y));
+	ege::color_t getpixelRK(int x,int y,int z=0){
+		return ege::getpixel(setCoordinateX(x)-z*DEVIATION,setCoordinateY(y)-z*DEVIATION);
 	}
+
 	//斜率范围为[0,1]时的中点画线法
 	void MidPointLine0To1(int x0, int y0, int x1, int y1, ege::color_t color) {
 		int dx = x1 - x0, dy = y1 - y0;
@@ -232,10 +235,15 @@ namespace rkcg{
 
 
 	struct point{
-		int x,y;
+		int x,y,z;
 		point(int x,int y){
 			this->x=x;
 			this->y=y;
+			this->z=0;
+		}
+		point(int x,int y,int z){
+			point(x,y);
+			this->z=z;
 		}
 	};
 
@@ -675,12 +683,12 @@ namespace rkcg{
 	}
 
 	//根据给定的基准点点集得到比塞尔曲线点集
-	std::vector<point> getPointOfBezierCurve(std::vector<point> &datum_points){
+	std::vector<point> getPointOfBezierCurve(std::vector<point> &datum_points,int num = 100){
 		std::vector<point> res_points;
 		double a, b;
 		double temp, temp1, temp2, bi;
 		int len=datum_points.size()-1;
-		for (double t = 0.0; t <= 1; t += 0.01){
+		for (double t = 0.0; t <= 1; t += 1.0 / num){
 			a = 0.0;
 			b = 0.0;
 			for (int i = 0; i <= len; ++i){
@@ -697,4 +705,35 @@ namespace rkcg{
 		return res_points;
 	}
 
+
+	std::vector<point> drawBezierCurveSurface(std::vector<std::vector<point>> datum_points,int num = 100){
+		std::vector<point> res_points;
+		double a, b;
+		double temp, temp1, temp2, bi1, bi2;
+		int len1=datum_points.size()-1;
+		int len2=datum_points[0].size()-1;
+		for (double u = 0.0; u <= 1; u += 1.0 / num){
+			for(double v = 0.0; v <= 1;v += 1.0 / num){
+				a = 0.0;
+				b = 0.0;
+				for(int i = 0; i<= len1 ; i++){
+					temp = 1.0*fac(len1) / fac(i) / fac(len1 - i);
+					temp1 = pow(u, i);
+					temp2 = pow(1 - u, len1 - i);
+					bi1 = temp * temp1 * temp2;
+					for(int j = 0;j <= len2; j++){
+						temp = 1.0*fac(len2) / fac(j) / fac(len2 - j);
+						temp1 = pow(v, j);
+						temp2 = pow(1 - v, len2 - j);
+						bi2 = temp * temp1 * temp2;
+						a += bi1 * bi2 * datum_points[i][j].x;
+						b += bi1 * bi2 * datum_points[i][j].y;
+					}
+				}
+				// printf("x=%lf;y=%lf\n",a,b);
+				res_points.push_back({(int)a,(int)b});
+			}
+		}
+		return res_points;
+	}
 }

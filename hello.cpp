@@ -18,6 +18,8 @@ int main()
 	drawScale(-180,0,180,0,0);
 	drawArrow(0,-200,0,200,0);
 	drawScale(0,-180,0,180,0);
+	//画Z轴
+	drawArrow(150,150,-150,-150,0);
 
 	// ege::line(setCoordinateX(-100),setCoordinateY(-50),
 	// 	setCoordinateX(100),setCoordinateY(50));
@@ -72,22 +74,59 @@ int main()
 	points.push_back(point(50,50));
 	points.push_back(point(100,50));
 	points.push_back(point(100,100));
-	getPolygonFromPoints(points,0);
-	//y=50+x;
-	MidPointLineX(0,50,150,200,0);
-	getPolygonFromPoints(reflectionTransformationByArbitraryLine(points,50,1,1),0);
+	// getPolygonFromPoints(points,0);
+	// //y=50+x;
+	// MidPointLineX(0,50,150,200,0);
+	// getPolygonFromPoints(reflectionTransformationByArbitraryLine(points,50,1,1),0);
 	// MidPointLineX(20,-200,20,200,0);
 	// getPolygonFromPoints(reflectionTransformationByArbitraryLine(points,-20,1,0),0);
 	// MidPointLineX(-200,20,200,20,0);
 	// getPolygonFromPoints(reflectionTransformationByArbitraryLine(points,20,0,1),0);
 
-	std::vector<point> datum_points;
-	datum_points.push_back({140, 25});
-	datum_points.push_back({150, 100});
-	datum_points.push_back({175, 125});
-	datum_points.push_back({200, 25});
+	// std::vector<point> datum_points;
+	// datum_points.push_back({140, 25});
+	// datum_points.push_back({150, 100});
+	// datum_points.push_back({175, 125});
+	// datum_points.push_back({200, 25});
 	
-	connectPoints(getPointOfBezierCurve(datum_points),0);
+	// connectPoints(getPointOfBezierCurve(datum_points),0);
+
+	// std::vector<point> datum_points2;
+	// datum_points2.push_back({-140, -25});
+	// datum_points2.push_back({-150, -100});
+	// datum_points2.push_back({-175, -125});
+	// datum_points2.push_back({-200, -25});
+	// datum_points2.push_back({-210,0});
+	// connectPoints(getPointOfBezierCurve(datum_points2),ege::RED);
+
+	//画一个立方体
+	std::vector<std::vector<point>> ppp;
+	std::vector<point> pp1;
+	std::vector<point> ppp2;
+	std::vector<point> ppp3;
+	std::vector<point> pp4;
+	pp1.push_back(point(0,100));
+	for(int i=1;i<4;i++)
+		pp1.push_back(point(pp1[i-1].x-30*DEVIATION,pp1[i-1].y-30*DEVIATION));
+
+	ppp2.push_back(point(40,60));
+	for(int i=1;i<4;i++)
+		ppp2.push_back(point(ppp2[i-1].x-30*DEVIATION,ppp2[i-1].y-30*DEVIATION));
+
+	ppp3.push_back(point(100,120));
+	for(int i=1;i<4;i++)
+		ppp3.push_back(point(ppp3[i-1].x-30*DEVIATION,ppp3[i-1].y-30*DEVIATION));
+
+	pp4.push_back(point(120,80));
+	for(int i=1;i<4;i++)
+		pp4.push_back(point(pp4[i-1].x-30*DEVIATION,pp4[i-1].y-30*DEVIATION));
+
+	ppp.push_back(pp1);
+	ppp.push_back(ppp2);
+	ppp.push_back(ppp3);
+	ppp.push_back(pp4);
+
+	connectPoints(drawBezierCurveSurface(ppp),0);
 
 
 	ege::getch();							//暂停，等待键盘按键
