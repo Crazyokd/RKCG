@@ -10,21 +10,21 @@ int main(){
 	std::vector<point> ppp2;
 	std::vector<point> ppp3;
 	std::vector<point> pp4;
-	pp1.push_back(point(0,100));
+	pp1.push_back(point(0,100,0));
 	for(int i=1;i<4;i++)
-		pp1.push_back(point(pp1[i-1].x-30*DEVIATION,pp1[i-1].y-30*DEVIATION));
+		pp1.push_back(point(pp1[i-1].x,pp1[i-1].y,30*i));
 
-	ppp2.push_back(point(40,60));
+	ppp2.push_back(point(40,60,0));
 	for(int i=1;i<4;i++)
-		ppp2.push_back(point(ppp2[i-1].x-30*DEVIATION,ppp2[i-1].y-30*DEVIATION));
+		ppp2.push_back(point(ppp2[i-1].x,ppp2[i-1].y,30*i));
 
-	ppp3.push_back(point(100,120));
+	ppp3.push_back(point(100,120,0));
 	for(int i=1;i<4;i++)
-		ppp3.push_back(point(ppp3[i-1].x-30*DEVIATION,ppp3[i-1].y-30*DEVIATION));
+		ppp3.push_back(point(ppp3[i-1].x,ppp3[i-1].y,30*i));
 
-	pp4.push_back(point(120,80));
+	pp4.push_back(point(120,80,0));
 	for(int i=1;i<4;i++)
-		pp4.push_back(point(pp4[i-1].x-30*DEVIATION,pp4[i-1].y-30*DEVIATION));
+		pp4.push_back(point(pp4[i-1].x,pp4[i-1].y,30*i));
 
 	ppp.push_back(pp1);
 	ppp.push_back(ppp2);
