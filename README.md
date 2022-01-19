@@ -8,10 +8,6 @@
 
 - 由于主机上的MFC框架搭在VS2017上，VS2017的重量级自不必说:dizzy_face:，更重要的是其自带的那套快捷键简直和我相生相克:sob:，于是就只好折腾vscode上的计算机图形学了:punch::punch:
 
-  * 图形库这块我选择了[EGE](https://github.com/wysaid/xege)
-  * 本以为就是配个`include`，没想到还涉及很多问题【~~哎，头发怎么又变稀了？？
-    ~~】，当然收获也颇为丰厚！关于总结可以戳这个[:point_up_2:](https://crazyokd.github.io/2021/10/10/%E8%A7%A3%E5%86%B3vscode%E5%BC%95%E7%94%A8c++%E5%A4%96%E9%83%A8%E5%BA%93%E6%8A%A5%E9%94%99/)
-
 ## 快速开始
 
 试试这行命令：
@@ -76,6 +72,7 @@
     还有一个类似的测试脚本 [test.bat](test.bat)，每次都会调用 [make.bat](make.bat) 重新生成程序并运行，~~免去了调试的时间损耗~~。
 
 ## 参考
+- [EGE](https://github.com/wysaid/xege)
 
 - [error: default argument given for parameter 2](https://stackoverflow.com/questions/60896087/error-default-argument-given-for-parameter-2)
 
